@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BIOSAN — La santé commence de l'intérieur !</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap');
+    :root { --vert:#2e7d32; --vert-clair:#66bb6a; --cyan:#00acc1; --cyan-dark:#00838f; --creme:#f4faf4; --gris:#555; --brun:#3d1f00; --or:#c8960c; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Nunito',sans-serif; background:var(--creme); color:#1a1a1a; }
+
+    /* PAGES */
+    .page { display:none; }
+    .page.active { display:block; }
+
+    /* HEADER */
+    header { background:linear-gradient(90deg,var(--vert) 0%,var(--cyan-dark) 100%); padding:14px 40px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:200; box-shadow:0 2px 16px rgba(0,0,0,0.18); }
+    .logo-img { height:56px; object-fit:contain; filter:brightness(0) invert(1); cursor:pointer; }
+    .header-right { display:flex; align-items:center; }
+    nav a { color:white; text-decoration:none; margin-left:22px; font-size:14px; font-weight:600; opacity:0.9; transition:opacity 0.2s; cursor:pointer; }
+    nav a:hover { opacity:1; }
+    .panier-btn { margin-left:24px; background:rgba(255,255,255,0.2); border:2px solid rgba(255,255,255,0.5); color:white; padding:8px 18px; border-radius:50px; cursor:pointer; font-family:'Nunito',sans-serif; font-size:15px; font-weight:800; display:flex; align-items:center; gap:8px; transition:background 0.2s; }
+    .panier-btn:hover { background:rgba(255,255,255,0.35); }
+    .panier-count { background:#ff5252; color:white; border-radius:50%; width:22px; height:22px; font-size:12px; font-weight:900; display:flex; align-items:center; justify-content:center; }
+    .btn-retour { background:rgba(255,255,255,0.2); border:2px solid rgba(255,255,255,0.4); color:white; padding:8px 20px; border-radius:50px; cursor:pointer; font-family:'Nunito',sans-serif; font-size:14px; font-weight:700; display:flex; align-items:center; gap:6px; transition:background 0.2s; }
+    .btn-retour:hover { background:rgba(255,255,255,0.35); }
+
+    /* BANNIÈRE PROMO */
+    .banniere-promo { background:linear-gradient(90deg,#ff6f00,#ff8f00,#ff6f00); background-size:200% 100%; animation:shimmer 3s infinite linear; color:white; text-align:center; padding:12px 40px; font-size:14px; font-weight:800; display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap; position:relative; }
+    @keyframes shimmer { 0%{background-position:0% 0%;} 100%{background-position:200% 0%;} }
+    .banniere-promo span { opacity:0.9; font-weight:600; font-size:13px; }
+    .banniere-close { background:none; border:none; color:white; font-size:18px; cursor:pointer; opacity:0.8; position:absolute; right:16px; }
+
+    /* HERO */
+    .hero { background:linear-gradient(135deg,var(--vert) 0%,var(--cyan) 100%); color:white; display:flex; align-items:center; justify-content:center; gap:60px; padding:70px 60px; position:relative; overflow:hidden; }
+    .hero::before { content:''; position:absolute; width:400px; height:400px; background:rgba(255,255,255,0.05); border-radius:50%; top:-100px; right:-100px; }
+    .hero-texte { max-width:520px; }
+    .hero-badge { display:inline-block; background:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.4); padding:6px 20px; border-radius:30px; font-size:13px; font-weight:700; letter-spacing:1px; margin-bottom:22px; text-transform:uppercase; }
+    .hero h1 { font-family:'Playfair Display',serif; font-size:48px; line-height:1.15; margin-bottom:18px; }
+    .hero p { font-size:17px; opacity:0.92; line-height:1.7; margin-bottom:32px; }
+    .hero-btn { background:white; color:var(--vert); border:none; padding:16px 40px; font-size:16px; font-weight:800; border-radius:50px; cursor:pointer; transition:transform 0.2s,box-shadow 0.2s; font-family:'Nunito',sans-serif; }
+    .hero-btn:hover { transform:translateY(-3px); box-shadow:0 10px 28px rgba(0,0,0,0.2); }
+    .hero-logo { height:180px; object-fit:contain; filter:drop-shadow(0 8px 24px rgba(0,0,0,0.2)); flex-shrink:0; }
+
+    /* STATS */
+    .stats { background:white; display:flex; justify-content:center; border-bottom:1px solid #e8f5e9; flex-wrap:wrap; }
+    .stat { text-align:center; padding:22px 40px; border-right:1px solid #e8f5e9; }
+    .stat:last-child { border-right:none; }
+    .stat-nombre { font-family:'Playfair Display',serif; font-size:26px; color:var(--vert); font-weight:800; }
+    .stat-label { font-size:12px; color:var(--gris); text-transform:uppercase; letter-spacing:1px; margin-top:4px; }
+
+    /* PRÉSENTATION */
+    .biosan-presentation { background:white; padding:70px 40px; }
+    .presentation-contenu { max-width:860px; margin:0 auto; text-align:center; }
+    .presentation-badge { display:inline-block; background:#e8f5e9; color:var(--vert); border:1px solid #c8e6c9; padding:7px 20px; border-radius:30px; font-size:13px; font-weight:800; letter-spacing:1px; text-transform:uppercase; margin-bottom:16px; }
+    .presentation-titre { font-family:'Playfair Display',serif; font-size:36px; color:var(--vert); margin-bottom:30px; }
+    .presentation-texte { text-align:left; display:flex; flex-direction:column; gap:18px; margin-bottom:36px; }
+    .presentation-texte p { font-size:15px; line-height:1.9; color:#333; background:var(--creme); border-radius:12px; padding:20px 24px; border-left:4px solid var(--vert-clair); }
+    .presentation-texte strong { color:var(--vert); }
+    .presentation-points { display:grid; grid-template-columns:1fr 1fr; gap:14px; text-align:left; }
+    .point-item { display:flex; align-items:center; gap:12px; background:var(--creme); border-radius:12px; padding:14px 18px; border:1px solid #e8f5e9; font-size:14px; color:#333; }
+    .point-icon { font-size:18px; flex-shrink:0; }
+
+    /* PRODUITS */
+    .section-titre { text-align:center; padding:60px 20px 16px; }
+    .section-titre h2 { font-family:'Playfair Display',serif; font-size:38px; color:var(--vert); }
+    .section-titre p { color:var(--gris); margin-top:10px; font-size:16px; }
+    .produits { display:flex; justify-content:center; gap:28px; flex-wrap:wrap; padding:36px 40px 70px; max-width:1300px; margin:0 auto; }
+    .carte { background:white; border-radius:16px; width:270px; box-shadow:0 4px 24px rgba(46,125,50,0.08); overflow:hidden; transition:transform 0.25s,box-shadow 0.25s; display:flex; flex-direction:column; border:1px solid #e8f5e9; opacity:0; transform:translateY(30px); }
+    .carte.visible { opacity:1; transform:translateY(0); transition:opacity 0.6s ease,transform 0.6s ease; }
+    .carte:hover { transform:translateY(-10px); box-shadow:0 20px 48px rgba(46,125,50,0.16); }
+    .carte-img-wrap { height:200px; overflow:hidden; position:relative; background:#f0f9f0; }
+    .carte-img-wrap img { width:100%; height:100%; object-fit:cover; transition:transform 0.4s; }
+    .carte:hover .carte-img-wrap img { transform:scale(1.06); }
+    .carte-badge { position:absolute; top:12px; left:12px; background:var(--vert); color:white; font-size:10px; font-weight:800; padding:4px 12px; border-radius:20px; text-transform:uppercase; }
+    .carte-badge.cyan { background:var(--cyan); }
+    .carte-body { padding:18px 18px 0; flex-grow:1; }
+    .carte h3 { font-family:'Playfair Display',serif; font-size:20px; color:var(--vert); margin-bottom:2px; }
+    .carte-sous-titre { font-size:12px; color:var(--cyan-dark); font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; }
+    .carte-desc { font-size:13px; color:var(--gris); line-height:1.7; }
+    .carte-prix { padding:16px 18px 18px; margin-top:14px; border-top:1px solid #f0f0f0; }
+    .prix-ligne { display:flex; justify-content:space-between; align-items:center; margin-bottom:7px; }
+    .prix-label { font-size:13px; color:var(--gris); }
+    .prix-montant { font-weight:800; color:var(--vert); font-size:15px; }
+    .promo-tag { font-size:10px; background:#e8f5e9; color:var(--vert); padding:2px 8px; border-radius:10px; font-weight:700; margin-left:6px; }
+    .btn-ajouter { width:100%; background:linear-gradient(90deg,var(--vert) 0%,var(--cyan) 100%); color:white; border:none; padding:13px; border-radius:50px; cursor:pointer; font-size:14px; font-weight:800; transition:opacity 0.2s,transform 0.2s; font-family:'Nunito',sans-serif; margin-top:12px; }
+    .btn-ajouter:hover { opacity:0.9; transform:scale(1.02); }
+    .btn-savoir-plus { width:100%; background:transparent; color:var(--vert); border:2px solid var(--vert); padding:11px; border-radius:50px; cursor:pointer; font-size:13px; font-weight:800; transition:all 0.2s; font-family:'Nunito',sans-serif; margin-top:8px; text-decoration:none; display:block; text-align:center; }
+    .btn-savoir-plus:hover { background:var(--vert); color:white; }
+
+    /* TÉMOIGNAGES */
+    .temoignages { background:var(--creme); padding:70px 40px; }
+    .temoignages-titre { text-align:center; margin-bottom:40px; }
+    .temoignages-titre h2 { font-family:'Playfair Display',serif; font-size:36px; color:var(--vert); margin-bottom:8px; }
+    .temoignages-titre p { color:var(--gris); font-size:15px; }
+    .temoignages-grille { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; max-width:1100px; margin:0 auto; }
+    .temoignage-card { background:white; border-radius:16px; padding:28px; box-shadow:0 4px 20px rgba(46,125,50,0.08); border:1px solid #e8f5e9; position:relative; opacity:0; transform:translateY(20px); transition:opacity 0.6s ease,transform 0.6s ease; }
+    .temoignage-card.visible { opacity:1; transform:translateY(0); }
+    .temoignage-card::before { content:'\201C'; font-family:'Playfair Display',serif; font-size:64px; color:var(--vert-clair); position:absolute; top:10px; left:20px; line-height:1; opacity:0.4; }
+    .temoignage-etoiles { color:#ffc107; font-size:16px; margin-bottom:12px; }
+    .temoignage-texte { font-size:14px; color:#333; line-height:1.8; margin-bottom:20px; font-style:italic; }
+    .temoignage-auteur { display:flex; align-items:center; gap:12px; }
+    .temoignage-avatar { width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,var(--vert),var(--cyan)); color:white; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:16px; flex-shrink:0; }
+    .temoignage-nom { font-weight:800; font-size:14px; color:var(--vert); }
+    .temoignage-produit { font-size:12px; color:var(--gris); }
+
+    /* FAQ */
+    .faq { background:white; padding:70px 40px; }
+    .faq-titre { text-align:center; margin-bottom:40px; }
+    .faq-titre h2 { font-family:'Playfair Display',serif; font-size:36px; color:var(--vert); margin-bottom:8px; }
+    .faq-titre p { color:var(--gris); font-size:15px; }
+    .faq-liste { max-width:800px; margin:0 auto; display:flex; flex-direction:column; gap:12px; }
+    .faq-item { border:1px solid #e8f5e9; border-radius:14px; overflow:hidden; }
+    .faq-question { width:100%; background:white; border:none; padding:20px 24px; text-align:left; font-family:'Nunito',sans-serif; font-size:15px; font-weight:800; color:#1a1a1a; cursor:pointer; display:flex; justify-content:space-between; align-items:center; transition:background 0.2s; }
+    .faq-question:hover { background:var(--creme); }
+    .faq-question.actif { background:var(--creme); color:var(--vert); }
+    .faq-icone { font-size:20px; transition:transform 0.3s; flex-shrink:0; }
+    .faq-question.actif .faq-icone { transform:rotate(45deg); }
+    .faq-reponse { max-height:0; overflow:hidden; transition:max-height 0.4s ease,padding 0.3s; font-size:14px; color:#333; line-height:1.8; padding:0 24px; background:var(--creme); }
+    .faq-reponse.actif { max-height:300px; padding:16px 24px 20px; }
+    .faq-reponse strong { color:var(--vert); }
+
+    /* GARANTIES */
+    .garanties { background:linear-gradient(90deg,var(--vert) 0%,var(--cyan-dark) 100%); color:white; display:flex; justify-content:center; flex-wrap:wrap; }
+    .garantie { text-align:center; padding:36px 48px; border-right:1px solid rgba(255,255,255,0.15); }
+    .garantie:last-child { border-right:none; }
+    .garantie-icon { font-size:34px; margin-bottom:10px; }
+    .garantie-titre { font-weight:800; font-size:15px; }
+    .garantie-desc { font-size:12px; opacity:0.8; margin-top:4px; }
+
+    /* FOOTER */
+    footer { background:#0a1f0a; color:#888; text-align:center; padding:36px; font-size:13px; line-height:2.2; }
+    footer img { height:50px; object-fit:contain; margin-bottom:10px; filter:brightness(0) invert(0.7); display:block; margin:0 auto 10px; }
+    footer .slogan { color:var(--vert-clair); font-style:italic; font-size:14px; }
+
+    /* OVERLAY & MODALS */
+    .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:300; backdrop-filter:blur(3px); }
+    .overlay.actif { display:block; }
+    .modal-choix { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:white; border-radius:20px; padding:32px 28px; width:360px; z-index:400; box-shadow:0 24px 64px rgba(0,0,0,0.25); }
+    .modal-choix.actif { display:block; }
+    .modal-close { position:absolute; top:14px; right:16px; background:none; border:none; font-size:20px; cursor:pointer; color:#999; }
+    .modal-produit-img-wrap { height:140px; border-radius:12px; overflow:hidden; margin-bottom:16px; background:#f0f9f0; }
+    .modal-produit-img-wrap img { width:100%; height:100%; object-fit:cover; }
+    .modal-choix h3 { font-family:'Playfair Display',serif; font-size:22px; color:var(--vert); }
+    .choix-sous { font-size:12px; color:var(--cyan-dark); font-weight:700; text-transform:uppercase; letter-spacing:1px; margin:4px 0 18px; }
+    .choix-label { font-size:14px; font-weight:700; color:#333; margin-bottom:14px; }
+    .choix-options { display:flex; gap:12px; }
+    .choix-card { flex:1; border:2px solid #e0e0e0; border-radius:14px; padding:16px 10px; text-align:center; cursor:pointer; transition:all 0.2s; position:relative; }
+    .choix-card:hover { border-color:var(--vert); background:#f0faf0; transform:translateY(-2px); }
+    .choix-promo { border-color:var(--vert-clair); background:#f0faf0; }
+    .choix-badge-promo { position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:#ff6f00; color:white; font-size:10px; font-weight:800; padding:3px 10px; border-radius:20px; white-space:nowrap; }
+    .choix-qte { font-size:15px; font-weight:800; color:#333; margin-bottom:6px; }
+    .choix-prix { font-size:17px; font-weight:900; color:var(--vert); }
+    .choix-economie { font-size:11px; color:#ff6f00; font-weight:700; margin-top:4px; }
+    .modal-panier { display:none; position:fixed; top:0; right:0; bottom:0; width:380px; background:white; z-index:400; box-shadow:-8px 0 40px rgba(0,0,0,0.15); flex-direction:column; }
+    .modal-panier.actif { display:flex; }
+    .panier-header { display:flex; justify-content:space-between; align-items:center; padding:20px 24px; background:linear-gradient(90deg,var(--vert),var(--cyan-dark)); color:white; }
+    .panier-header h3 { font-size:20px; font-weight:800; }
+    .panier-header button { background:none; border:none; color:white; font-size:22px; cursor:pointer; }
+    .panier-items { flex:1; overflow-y:auto; padding:20px 24px; }
+    .panier-vide { text-align:center; color:#aaa; font-size:15px; margin-top:40px; }
+    .panier-item { display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid #f0f0f0; }
+    .panier-item-img { width:54px; height:54px; border-radius:10px; object-fit:cover; flex-shrink:0; }
+    .panier-item-info { flex:1; }
+    .panier-item-nom { font-size:14px; font-weight:800; color:var(--vert); }
+    .panier-item-qte { font-size:12px; color:var(--gris); }
+    .panier-item-prix { font-size:15px; font-weight:900; color:var(--vert); white-space:nowrap; }
+    .panier-item-del { background:none; border:none; color:#ccc; font-size:18px; cursor:pointer; transition:color 0.2s; }
+    .panier-item-del:hover { color:#ff5252; }
+    .panier-footer { padding:20px 24px; border-top:2px solid #e8f5e9; }
+    .panier-total { font-size:20px; font-weight:900; color:var(--vert); margin-bottom:14px; text-align:right; }
+    .btn-whatsapp-panier { width:100%; background:#25D366; color:white; border:none; padding:14px; border-radius:50px; cursor:pointer; font-size:15px; font-weight:800; display:flex; align-items:center; justify-content:center; gap:10px; font-family:'Nunito',sans-serif; margin-bottom:10px; }
+    .btn-vider { width:100%; background:none; border:1px solid #ddd; color:#999; padding:10px; border-radius:50px; cursor:pointer; font-size:13px; font-family:'Nunito',sans-serif; transition:all 0.2s; }
+    .btn-vider:hover { border-color:#ff5252; color:#ff5252; }
+
+    /* WHATSAPP FLOTTANT */
+    .whatsapp-float { position:fixed; bottom:28px; right:28px; background:#25D366; color:white; display:flex; align-items:center; gap:10px; padding:14px 22px 14px 16px; border-radius:50px; text-decoration:none; font-family:'Nunito',sans-serif; font-weight:800; font-size:15px; box-shadow:0 6px 24px rgba(37,211,102,0.45); z-index:100; animation:pulse-wa 2.5s infinite; transition:transform 0.2s; }
+    .whatsapp-float:hover { transform:translateY(-4px); animation:none; }
+    @keyframes pulse-wa { 0%{box-shadow:0 6px 24px rgba(37,211,102,0.45);} 50%{box-shadow:0 6px 36px rgba(37,211,102,0.75);} 100%{box-shadow:0 6px 24px rgba(37,211,102,0.45);} }
+    .notif { position:fixed; bottom:90px; right:28px; background:var(--vert); color:white; padding:12px 20px; border-radius:12px; font-size:14px; font-weight:700; z-index:500; opacity:0; transition:opacity 0.3s; pointer-events:none; }
+    .notif.show { opacity:1; }
+
+    /* PAGES DÉTAIL */
+    .hero-produit { background:linear-gradient(135deg,var(--vert) 0%,var(--cyan) 100%); padding:60px 80px; display:flex; align-items:center; gap:60px; color:white; }
+    .hero-produit.brun { background:linear-gradient(135deg,#1a0a00 0%,#3d1f00 40%,#5d3a1a 70%,var(--vert) 100%); }
+    .hero-produit.violet { background:linear-gradient(135deg,#1a0050 0%,#4a0080 50%,var(--cyan) 100%); }
+    .hero-img-wrap { width:320px; height:320px; flex-shrink:0; border-radius:24px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.25); }
+    .hero-img-wrap img { width:100%; height:100%; object-fit:cover; }
+    .hero-detail-info { max-width:560px; }
+    .hero-badge-produit { display:inline-block; background:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.4); padding:6px 18px; border-radius:30px; font-size:12px; font-weight:700; letter-spacing:1px; margin-bottom:16px; text-transform:uppercase; }
+    .hero-detail-info h1 { font-family:'Playfair Display',serif; font-size:52px; margin-bottom:8px; line-height:1.1; }
+    .hero-sous-titre { font-size:18px; opacity:0.85; font-style:italic; margin-bottom:20px; }
+    .hero-detail-info p { font-size:15px; line-height:1.8; opacity:0.92; margin-bottom:28px; }
+    .prix-hero { display:flex; gap:20px; flex-wrap:wrap; margin-bottom:28px; }
+    .prix-box { background:rgba(255,255,255,0.15); border:2px solid rgba(255,255,255,0.3); border-radius:16px; padding:14px 24px; text-align:center; position:relative; }
+    .prix-box .offre-badge { position:absolute; top:-10px; left:50%; transform:translateX(-50%); background:#ff6f00; color:white; font-size:10px; font-weight:800; padding:2px 10px; border-radius:20px; white-space:nowrap; }
+    .prix-lbl { font-size:12px; opacity:0.8; margin-bottom:4px; }
+    .prix-val { font-size:20px; font-weight:900; }
+    .prix-eco { font-size:11px; color:#ffe082; margin-top:3px; font-weight:700; }
+    .btn-commander-hero { background:white; color:var(--vert); border:none; padding:16px 36px; border-radius:50px; cursor:pointer; font-size:16px; font-weight:800; font-family:'Nunito',sans-serif; display:flex; align-items:center; gap:10px; transition:transform 0.2s,box-shadow 0.2s; }
+    .btn-commander-hero:hover { transform:translateY(-3px); box-shadow:0 10px 28px rgba(0,0,0,0.2); }
+    .contenu-detail { max-width:960px; margin:0 auto; padding:60px 40px; display:flex; flex-direction:column; gap:50px; }
+    .section-carte { background:white; border-radius:20px; padding:40px; box-shadow:0 4px 24px rgba(46,125,50,0.08); border:1px solid #e8f5e9; }
+    .section-carte h2 { font-family:'Playfair Display',serif; font-size:28px; color:var(--vert); margin-bottom:24px; display:flex; align-items:center; gap:12px; }
+    .intro-texte { font-size:15px; line-height:1.9; color:#333; background:linear-gradient(135deg,#e8f5e9,#e0f7fa); border-radius:14px; padding:24px 28px; border-left:4px solid var(--vert); }
+    .intro-texte strong { color:var(--vert); }
+    .ingredients-liste { display:flex; flex-direction:column; gap:20px; }
+    .ingredient-item { display:flex; gap:20px; background:var(--creme); border-radius:16px; padding:24px; border:1px solid #e8f5e9; }
+    .ingredient-icon-wrap { width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg,var(--vert),var(--cyan)); display:flex; align-items:center; justify-content:center; font-size:28px; flex-shrink:0; }
+    .ingredient-contenu { flex:1; }
+    .ingredient-nom { font-family:'Playfair Display',serif; font-size:18px; color:var(--vert); margin-bottom:4px; }
+    .ingredient-sous { font-size:12px; color:var(--cyan-dark); font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; }
+    .ingredient-desc { font-size:14px; color:#333; line-height:1.7; margin-bottom:12px; }
+    .ingredient-roles { list-style:none; display:flex; flex-direction:column; gap:5px; }
+    .ingredient-roles li { font-size:13px; color:var(--gris); display:flex; align-items:center; gap:8px; }
+    .ingredient-roles li::before { content:'✓'; color:var(--vert); font-weight:900; flex-shrink:0; }
+    .bienfaits-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .bienfait-item { display:flex; align-items:flex-start; gap:12px; background:var(--creme); border-radius:12px; padding:16px; border:1px solid #e8f5e9; }
+    .bienfait-icon { font-size:24px; flex-shrink:0; margin-top:2px; }
+    .bienfait-titre { font-size:14px; font-weight:800; color:var(--vert); margin-bottom:4px; }
+    .bienfait-desc { font-size:13px; color:var(--gris); line-height:1.6; }
+    .apps-grid { display:flex; flex-wrap:wrap; gap:10px; }
+    .app-tag { background:#e8f5e9; color:var(--vert); padding:7px 16px; border-radius:30px; font-size:13px; font-weight:700; border:1px solid #c8e6c9; }
+    .etapes { display:flex; flex-direction:column; gap:16px; }
+    .etape { display:flex; align-items:flex-start; gap:16px; background:var(--creme); border-radius:12px; padding:16px; border:1px solid #e8f5e9; }
+    .etape-num { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,var(--vert),var(--cyan)); color:white; font-weight:900; font-size:16px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .etape-texte { font-size:14px; color:#333; line-height:1.7; }
+    .etape-texte strong { color:var(--vert); }
+    .conseil-box { background:linear-gradient(135deg,#e8f5e9,#e0f7fa); border-radius:12px; padding:20px 24px; border-left:4px solid var(--vert); margin-top:16px; font-size:14px; color:#333; line-height:1.7; }
+    .conseil-box strong { color:var(--vert); }
+    .cta-bas { background:linear-gradient(135deg,var(--vert),var(--cyan)); border-radius:20px; padding:40px; text-align:center; color:white; }
+    .cta-bas h3 { font-family:'Playfair Display',serif; font-size:28px; margin-bottom:10px; }
+    .cta-bas p { opacity:0.9; margin-bottom:28px; font-size:15px; }
+    .cta-buttons { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
+    .btn-cta-wa { background:#25D366; color:white; border:none; padding:14px 32px; border-radius:50px; font-size:15px; font-weight:800; cursor:pointer; font-family:'Nunito',sans-serif; display:flex; align-items:center; gap:10px; transition:transform 0.2s; }
+    .btn-cta-wa:hover { transform:scale(1.04); }
+    .btn-cta-retour { background:rgba(255,255,255,0.2); color:white; border:2px solid rgba(255,255,255,0.5); padding:14px 32px; border-radius:50px; font-size:15px; font-weight:800; cursor:pointer; font-family:'Nunito',sans-serif; transition:background 0.2s; }
+    .btn-cta-retour:hover { background:rgba(255,255,255,0.35); }
+    .systeme-nerveux { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:20px; }
+    .sn-item { background:white; border:1px solid #e8f5e9; border-radius:12px; padding:16px; text-align:center; }
+    .sn-icon { font-size:28px; margin-bottom:8px; }
+    .sn-label { font-size:13px; font-weight:700; color:var(--vert); }
+
+    /* RESPONSIVE */
+    @media(max-width:768px) {
+      .hero { flex-direction:column; text-align:center; padding:50px 24px; gap:30px; }
+      .hero h1 { font-size:34px; }
+      .hero-logo { height:120px; }
+      header { padding:14px 16px; }
+      nav { display:none; }
+      .modal-panier { width:100%; }
+      .modal-choix { width:92%; }
+      .temoignages-grille { grid-template-columns:1fr; }
+      .hero-produit { flex-direction:column; padding:40px 24px; gap:30px; }
+      .hero-img-wrap { width:100%; height:260px; }
+      .hero-detail-info h1 { font-size:36px; }
+      .bienfaits-grid { grid-template-columns:1fr; }
+      .contenu-detail { padding:40px 20px; }
+      .ingredient-item { flex-direction:column; }
+      .systeme-nerveux { grid-template-columns:repeat(2,1fr); }
+      .presentation-points { grid-template-columns:1fr; }
+      .whatsapp-float { padding:14px; border-radius:50%; }
+      .whatsapp-float .wa-texte { display:none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <img class="logo-img" src="https://i.imgur.com/placeholder.png" alt="BIOSAN" id="logo-header" onclick="allerPage('accueil')" onerror="this.style.display='none'; document.getElementById('logo-texte').style.display='block'">
+  <span id="logo-texte" style="display:none;font-family:'Playfair Display',serif;font-size:24px;color:white;font-weight:800;cursor:pointer;" onclick="allerPage('accueil')">🌿 BIOSAN</span>
+  <div class="header-right">
+    <nav>
+      <a onclick="allerPage('accueil')">Accueil</a>
+      <a onclick="allerPage('accueil'); setTimeout(()=>document.querySelector('.section-titre').scrollIntoView({behavior:'smooth'}),100)">Produits</a>
+      <a href="https://wa.me/2250759385909" target="_blank">Contact</a>
+    </nav>
+    <button class="panier-btn" onclick="ouvrirPanier()">🛒 Panier <span class="panier-count" id="panier-count">0</span></button>
+  </div>
+</header>
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay" onclick="fermerTout()"></div>
+
+<!-- MODAL CHOIX QUANTITÉ -->
+<div class="modal-choix" id="modal-choix">
+  <button class="modal-close" onclick="fermerChoix()">✕</button>
+  <div class="modal-produit-img-wrap"><img id="choix-img" src="" alt=""></div>
+  <h3 id="choix-nom"></h3>
+  <p class="choix-sous" id="choix-sous"></p>
+  <p class="choix-label">Choisissez votre quantité :</p>
+  <div class="choix-options">
+    <div class="choix-card" onclick="ajouterAuPanier(1)"><div class="choix-qte">1 boîte</div><div class="choix-prix" id="prix-1"></div></div>
+    <div class="choix-card choix-promo" onclick="ajouterAuPanier(2)"><div class="choix-badge-promo">🔥 Meilleure offre</div><div class="choix-qte">2 boîtes</div><div class="choix-prix" id="prix-2"></div><div class="choix-economie" id="economie-2"></div></div>
+  </div>
+</div>
+
+<!-- MODAL PANIER -->
+<div class="modal-panier" id="modal-panier">
+  <div class="panier-header"><h3>🛒 Mon Panier</h3><button onclick="fermerPanier()">✕</button></div>
+  <div class="panier-items" id="panier-items"><p class="panier-vide">Votre panier est vide 🛒</p></div>
+  <div class="panier-footer" id="panier-footer" style="display:none;">
+    <div class="panier-total">Total : <span id="panier-total">0</span> FCFA</div>
+    <button class="btn-whatsapp-panier" onclick="commanderWhatsApp()">
+      <svg style="width:20px;height:20px;fill:white;flex-shrink:0;" viewBox="0 0 32 32"><path d="M16 0C7.163 0 0 7.163 0 16c0 2.833.738 5.49 2.027 7.8L0 32l8.418-2.01A15.93 15.93 0 0016 32c8.837 0 16-7.163 16-16S24.837 0 16 0zm0 29.333a13.27 13.27 0 01-6.765-1.847l-.484-.287-5.003 1.196 1.23-4.867-.316-.5A13.267 13.267 0 012.667 16C2.667 8.636 8.636 2.667 16 2.667S29.333 8.636 29.333 16 23.364 29.333 16 29.333zm7.27-9.87c-.398-.199-2.354-1.162-2.72-1.295-.365-.133-.63-.199-.896.2-.265.398-1.029 1.295-1.261 1.56-.232.266-.465.299-.863.1-.398-.2-1.681-.62-3.203-1.976-1.184-1.056-1.983-2.36-2.215-2.758-.232-.398-.025-.613.174-.811.179-.178.398-.465.597-.698.2-.232.266-.398.399-.664.133-.265.066-.498-.033-.697-.1-.2-.896-2.16-1.228-2.957-.323-.777-.651-.672-.896-.684l-.764-.013c-.265 0-.697.1-1.062.498-.365.398-1.394 1.362-1.394 3.322s1.427 3.854 1.626 4.12c.2.265 2.808 4.287 6.803 6.014.951.41 1.693.655 2.272.839.954.303 1.823.26 2.51.158.765-.114 2.354-.963 2.686-1.893.333-.93.333-1.727.233-1.893-.1-.166-.365-.266-.764-.465z"/></svg>
+      Commander via WhatsApp
+    </button>
+    <button class="btn-vider" onclick="viderPanier()">Vider le panier</button>
+  </div>
+</div>
+
+<div class="notif" id="notif">✅ Produit ajouté au panier !</div>
+
+<!-- ========== PAGE ACCUEIL ========== -->
+<div class="page active" id="page-accueil">
+
+  <div class="banniere-promo" id="banniere-promo">
+    🔥 <strong>OFFRE SPÉCIALE BIOSAN</strong> — Commandez 2 boîtes et économisez jusqu'à <strong>10 000 FCFA</strong> sur chaque produit ! <span>Profitez-en maintenant !</span>
+    <button class="banniere-close" onclick="document.getElementById('banniere-promo').style.display='none'">✕</button>
+  </div>
+
+  <section class="hero">
+    <div class="hero-texte">
+      <div class="hero-badge">🌿 100% Naturel & Bio</div>
+      <h1>La santé commence<br>de l'intérieur !</h1>
+      <p>Votre partenaire bien-être spécialisé dans les compléments alimentaires naturels SuperLife — pour accompagner votre corps, renforcer vos défenses et retrouver votre vitalité.</p>
+      <button class="hero-btn" onclick="document.querySelector('.section-titre').scrollIntoView({behavior:'smooth'})">Découvrir nos produits →</button>
+    </div>
+    <img class="hero-logo" id="logo-hero" src="https://i.imgur.com/placeholder.png" alt="BIOSAN" onerror="this.style.fontSize='48px';this.src='';this.alt='🌿 BIOSAN'">
+  </section>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-nombre">5</div><div class="stat-label">Produits Bio</div></div>
+    <div class="stat"><div class="stat-nombre">100%</div><div class="stat-label">Naturel</div></div>
+    <div class="stat"><div class="stat-nombre">⭐ 5/5</div><div class="stat-label">Satisfaction</div></div>
+    <div class="stat"><div class="stat-nombre">🚚</div><div class="stat-label">Livraison rapide</div></div>
+  </div>
+
+  <div class="biosan-presentation">
+    <div class="presentation-contenu">
+      <div class="presentation-badge">🌿 BIOSAN & SuperLife</div>
+      <h2 class="presentation-titre">Qui sommes-nous ?</h2>
+      <div class="presentation-texte">
+        <p>Bienvenue chez <strong>BIOSAN</strong>, votre partenaire bien-être spécialisé dans la commercialisation des <strong>produits SuperLife</strong>. Notre mission est simple : vous aider à retrouver une <strong>meilleure qualité de vie</strong> grâce à des compléments alimentaires naturels conçus pour accompagner l'organisme, <strong>renforcer les défenses du corps</strong> et soutenir plusieurs fonctions essentielles.</p>
+        <p>Aujourd'hui, de nombreuses personnes vivent avec une <strong>fatigue constante</strong>, un <strong>stress permanent</strong>, des <strong>douleurs récurrentes</strong>, des problèmes digestifs ou encore une <strong>baisse d'énergie</strong> sans réellement comprendre ce qui se passe dans leur organisme. Très souvent, le corps envoie des <strong>signaux d'alerte</strong> bien avant l'apparition de véritables complications.</p>
+        <p>Les <strong>produits SuperLife</strong> ont été pensés pour accompagner naturellement le corps grâce à des <strong>ingrédients puissants</strong>, des <strong>antioxydants naturels</strong> et des <strong>extraits végétaux</strong> reconnus pour leurs bienfaits.</p>
+      </div>
+      <div class="presentation-points">
+        <div class="point-item"><span class="point-icon">✅</span><span>Produits à base d'ingrédients <strong>100% naturels</strong></span></div>
+        <div class="point-item"><span class="point-icon">✅</span><span>Riches en <strong>antioxydants</strong> et extraits végétaux</span></div>
+        <div class="point-item"><span class="point-icon">✅</span><span>Faciles à intégrer dans le <strong>quotidien</strong></span></div>
+        <div class="point-item"><span class="point-icon">✅</span><span><strong>Suivi et accompagnement</strong> personnalisés</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-titre">
+    <h2>Nos Produits</h2>
+    <p>Chaque produit est formulé pour cibler un besoin précis de votre organisme</p>
+  </div>
+
+  <div class="produits">
+    <div class="carte">
+      <div class="carte-img-wrap"><img src="stc30.jpg" alt="STC30" onerror="this.parentElement.style.background='#e8f5e9';this.style.display='none'"><span class="carte-badge">⭐ Best-seller</span></div>
+      <div class="carte-body"><h3>STC30</h3><div class="carte-sous-titre">Le Généraliste du Corps</div><p class="carte-desc">Booste le système d'auto guérison grâce aux cellules souches végétales et antioxydants puissants. Renforce l'énergie et la vitalité.</p></div>
+      <div class="carte-prix">
+        <div class="prix-ligne"><span class="prix-label">1 boîte</span><span class="prix-montant">45 000 FCFA</span></div>
+        <div class="prix-ligne"><span class="prix-label">2 boîtes</span><span class="prix-montant">80 000 FCFA <span class="promo-tag">Éco. 10 000</span></span></div>
+        <button class="btn-ajouter" onclick="ouvrirChoix('STC30','Le Généraliste du Corps',45000,80000,'stc30.jpg')">🛒 Ajouter au panier</button>
+        <button class="btn-savoir-plus" onclick="allerPage('stc30')">🔍 En savoir plus</button>
+      </div>
+    </div>
+
+    <div class="carte">
+      <div class="carte-img-wrap"><img src="scc.jpg" alt="SCC+" onerror="this.parentElement.style.background='#e8f5e9';this.style.display='none'"><span class="carte-badge cyan">Minceur</span></div>
+      <div class="carte-body"><h3>SCC+</h3><div class="carte-sous-titre">Le Nettoyeur du Côlon</div><p class="carte-desc">Broyeur de graisse naturel. Nettoie le côlon, améliore le transit intestinal et favorise un meilleur confort digestif.</p></div>
+      <div class="carte-prix">
+        <div class="prix-ligne"><span class="prix-label">1 boîte</span><span class="prix-montant">55 000 FCFA</span></div>
+        <div class="prix-ligne"><span class="prix-label">2 boîtes</span><span class="prix-montant">100 000 FCFA <span class="promo-tag">Éco. 10 000</span></span></div>
+        <button class="btn-ajouter" onclick="ouvrirChoix('SCC+','Le Nettoyeur du Côlon',55000,100000,'scc.jpg')">🛒 Ajouter au panier</button>
+        <button class="btn-savoir-plus" onclick="allerPage('scc')">🔍 En savoir plus</button>
+      </div>
+    </div>
+
+    <div class="carte">
+      <div class="carte-img-wrap"><img src="sic.jpg" alt="SIC" onerror="this.parentElement.style.background='#e8f5e9';this.style.display='none'"><span class="carte-badge">Immunité</span></div>
+      <div class="carte-body"><h3>SIC</h3><div class="carte-sous-titre">Le Défenseur de l'Immunité</div><p class="carte-desc">Booste le système immunitaire, protège des infections. Assure une bonne santé intestinale et un excellent regain d'énergie.</p></div>
+      <div class="carte-prix">
+        <div class="prix-ligne"><span class="prix-label">1 boîte</span><span class="prix-montant">50 000 FCFA</span></div>
+        <div class="prix-ligne"><span class="prix-label">2 boîtes</span><span class="prix-montant">90 000 FCFA <span class="promo-tag">Éco. 10 000</span></span></div>
+        <button class="btn-ajouter" onclick="ouvrirChoix('SIC','Le Défenseur de l\'Immunité',50000,90000,'sic.jpg')">🛒 Ajouter au panier</button>
+        <button class="btn-savoir-plus" onclick="allerPage('sic')">🔍 En savoir plus</button>
+      </div>
+    </div>
+
+    <div class="carte">
+      <div class="carte-img-wrap"><img src="snc.jpg" alt="SNC" onerror="this.parentElement.style.background='#e8f5e9';this.style.display='none'"><span class="carte-badge cyan">Neuro</span></div>
+      <div class="carte-body"><h3>SNC</h3><div class="carte-sous-titre">Le Protecteur des Nerfs</div><p class="carte-desc">Lutéine et Ginkgo Biloba pour soutenir le système nerveux, améliorer la mémoire, la vision et le sommeil.</p></div>
+      <div class="carte-prix">
+        <div class="prix-ligne"><span class="prix-label">1 boîte</span><span class="prix-montant">50 000 FCFA</span></div>
+        <div class="prix-ligne"><span class="prix-label">2 boîtes</span><span class="prix-montant">90 000 FCFA <span class="promo-tag">Éco. 10 000</span></span></div>
+        <button class="btn-ajouter" onclick="ouvrirChoix('SNC','Le Protecteur des Nerfs',50000,90000,'snc.jpg')">🛒 Ajouter au panier</button>
+        <button class="btn-savoir-plus" onclick="allerPage('snc')">🔍 En savoir plus</button>
+      </div>
+    </div>
+
+    <div class="carte">
+      <div class="carte-img-wrap"><img src="doubleroot.jpg" alt="Double Root" onerror="this.parentElement.style.background='#e8f5e9';this.style.display='none'"><span class="carte-badge">Virilité</span></div>
+      <div class="carte-body"><h3>Double Root</h3><div class="carte-sous-titre">Le Booster de Vitalité</div><p class="carte-desc">Café Arabica + Ginseng + Maca. Renforce la vitalité et l'endurance physique masculine naturellement.</p></div>
+      <div class="carte-prix">
+        <div class="prix-ligne"><span class="prix-label">1 boîte</span><span class="prix-montant">30 000 FCFA</span></div>
+        <div class="prix-ligne"><span class="prix-label">2 boîtes</span><span class="prix-montant">50 000 FCFA <span class="promo-tag">Éco. 10 000</span></span></div>
+        <button class="btn-ajouter" onclick="ouvrirChoix('Double Root Coffee','Le Booster de Vitalité',30000,50000,'doubleroot.jpg')">🛒 Ajouter au panier</button>
+        <button class="btn-savoir-plus" onclick="allerPage('doubleroot')">🔍 En savoir plus</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TÉMOIGNAGES -->
+  <div class="temoignages">
+    <div class="temoignages-titre"><h2>Ce que disent nos clients</h2><p>Ils ont fait confiance à BIOSAN — voici leurs expériences</p></div>
+    <div class="temoignages-grille">
+      <div class="temoignage-card"><div class="temoignage-etoiles">★★★★★</div><p class="temoignage-texte">Depuis que j'utilise le STC30, je me sens vraiment différent. Mon énergie est revenue, je dors mieux et mes douleurs articulaires ont beaucoup diminué. Je recommande vivement à toute ma famille !</p><div class="temoignage-auteur"><div class="temoignage-avatar">K</div><div><div class="temoignage-nom">Koné Mamadou</div><div class="temoignage-produit">STC30 — 2 boîtes</div></div></div></div>
+      <div class="temoignage-card"><div class="temoignage-etoiles">★★★★★</div><p class="temoignage-texte">Le SCC+ a changé ma vie digestive ! Plus de ballonnements, je me sens légère et j'ai perdu 4 kg en 6 semaines. Le service BIOSAN est aussi très réactif sur WhatsApp.</p><div class="temoignage-auteur"><div class="temoignage-avatar">A</div><div><div class="temoignage-nom">Adjoua Félicité</div><div class="temoignage-produit">SCC+ — 2 boîtes</div></div></div></div>
+      <div class="temoignage-card"><div class="temoignage-etoiles">★★★★★</div><p class="temoignage-texte">J'ai commandé le SNC pour mes problèmes de mémoire et concentration. Après 3 semaines, la différence est notable. Je travaille mieux et mon sommeil s'est vraiment amélioré !</p><div class="temoignage-auteur"><div class="temoignage-avatar">Y</div><div><div class="temoignage-nom">Yao Brice</div><div class="temoignage-produit">SNC — 1 boîte</div></div></div></div>
+      <div class="temoignage-card"><div class="temoignage-etoiles">★★★★★</div><p class="temoignage-texte">Le Double Root Coffee est incroyable. Je me sens plus fort, plus confiant. C'est devenu mon café du matin indispensable. Ma femme remarque aussi la différence !</p><div class="temoignage-auteur"><div class="temoignage-avatar">D</div><div><div class="temoignage-nom">Diabaté Seydou</div><div class="temoignage-produit">Double Root Coffee</div></div></div></div>
+      <div class="temoignage-card"><div class="temoignage-etoiles">★★★★★</div><p class="temoignage-texte">J'ai pris le SIC pendant la saison des pluies et je n'ai eu aucune maladie cette année ! Mon immunité semble vraiment renforcée. Livraison rapide et produit authentique.</p><div class="temoignage-auteur"><div class="temoignage-avatar">N</div><div><div class="temoignage-nom">N'Goran Estelle</div><div class="temoignage-produit">SIC — 2 boîtes</div></div></div></div>
+      <div class="temoignage-card"><div class="temoignage-etoiles">★★★★★</div><p class="temoignage-texte">BIOSAN m'a accompagné avec professionnalisme. Les conseils sur WhatsApp m'ont aidé à choisir le bon produit. Je fais confiance à cette équipe les yeux fermés !</p><div class="temoignage-auteur"><div class="temoignage-avatar">O</div><div><div class="temoignage-nom">Ouédraogo Fatou</div><div class="temoignage-produit">STC30 + SCC+</div></div></div></div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="faq">
+    <div class="faq-titre"><h2>Questions fréquentes</h2><p>Tout ce que vous devez savoir avant de commander</p></div>
+    <div class="faq-liste">
+      <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">Les produits SuperLife sont-ils sans danger ? <span class="faq-icone">+</span></button><div class="faq-reponse">Oui. Les produits SuperLife sont fabriqués à base d'<strong>ingrédients 100% naturels</strong>, sans produits chimiques nocifs. Ils sont conçus pour accompagner naturellement l'organisme. Toutefois, si vous êtes sous traitement médical, nous vous recommandons de consulter votre médecin avant utilisation.</div></div>
+      <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">Combien de temps avant de voir des résultats ? <span class="faq-icone">+</span></button><div class="faq-reponse">Les premiers effets peuvent se ressentir dès <strong>2 à 3 semaines</strong> de consommation régulière. Pour des résultats durables et optimaux, une cure de <strong>1 à 3 mois</strong> est recommandée selon le produit et le besoin.</div></div>
+      <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">Peut-on combiner plusieurs produits ? <span class="faq-icone">+</span></button><div class="faq-reponse">Absolument ! Les produits SuperLife peuvent être combinés entre eux. Par exemple, le <strong>STC30 + SIC</strong> pour un boost immunitaire complet, ou le <strong>STC30 + SCC+</strong> pour une détox globale. Contactez-nous sur WhatsApp pour un accompagnement personnalisé.</div></div>
+      <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">Comment passer commande ? <span class="faq-icone">+</span></button><div class="faq-reponse">C'est très simple ! Cliquez sur <strong>"Ajouter au panier"</strong> ou <strong>"En savoir plus"</strong> sur le produit de votre choix, puis commandez via WhatsApp. Nous confirmons votre commande et organisons la livraison rapidement.</div></div>
+      <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">Livrez-vous partout en Côte d'Ivoire ? <span class="faq-icone">+</span></button><div class="faq-reponse">Oui ! Nous livrons dans <strong>tout le pays</strong>. Les délais et frais de livraison varient selon votre localisation. Contactez-nous sur WhatsApp au <strong>+225 07 59 38 59 09</strong> pour plus de détails.</div></div>
+      <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">Pourquoi commander 2 boîtes est plus avantageux ? <span class="faq-icone">+</span></button><div class="faq-reponse">En commandant 2 boîtes, vous bénéficiez d'une <strong>réduction allant jusqu'à 10 000 FCFA</strong> selon le produit. De plus, une cure complète sur 2 boîtes donne des résultats plus durables et visibles qu'une seule boîte.</div></div>
+    </div>
+  </div>
+
+  <div class="garanties">
+    <div class="garantie"><div class="garantie-icon">🌿</div><div class="garantie-titre">100% Naturel</div><div class="garantie-desc">Ingrédients bio certifiés</div></div>
+    <div class="garantie"><div class="garantie-icon">🚚</div><div class="garantie-titre">Livraison rapide</div><div class="garantie-desc">Partout au pays</div></div>
+    <div class="garantie"><div class="garantie-icon">✅</div><div class="garantie-titre">Qualité garantie</div><div class="garantie-desc">Produits testés & approuvés</div></div>
+    <div class="garantie"><div class="garantie-icon">📞</div><div class="garantie-titre">Support 7j/7</div><div class="garantie-desc">On répond toujours</div></div>
+  </div>
+
+  <footer>
+    <span style="font-family:'Playfair Display',serif;font-size:22px;color:white;display:block;margin-bottom:8px;">🌿 BIOSAN</span>
+    <span class="slogan">— La santé commence de l'intérieur ! —</span><br>
+    © 2026 BIOSAN — Tous droits réservés
+  </footer>
+</div>
+
+<!-- ========== PAGE STC30 ========== -->
+<div class="page" id="page-stc30">
+  <div class="hero-produit">
+    <div class="hero-img-wrap"><img src="stc30.jpg" alt="STC30" onerror="this.parentElement.style.background='#c8e6c9';this.style.display='none'"></div>
+    <div class="hero-detail-info">
+      <div class="hero-badge-produit">⭐ Produit N°1 SuperLife</div>
+      <h1>STC30</h1>
+      <div class="hero-sous-titre">Le Généraliste du Corps</div>
+      <p>Le produit phare révolutionnaire de SuperLife. Une technologie avancée basée sur les cellules souches végétales et les antioxydants puissants pour accompagner l'organisme en profondeur.</p>
+      <div class="prix-hero">
+        <div class="prix-box"><div class="prix-lbl">1 boîte</div><div class="prix-val">45 000 FCFA</div></div>
+        <div class="prix-box" style="padding-top:20px;"><div class="offre-badge">🔥 Meilleure offre</div><div class="prix-lbl">2 boîtes</div><div class="prix-val">80 000 FCFA</div><div class="prix-eco">Économie : 10 000 FCFA</div></div>
+      </div>
+      <button class="btn-commander-hero" onclick="commanderWAProduit('STC30 — Le Généraliste du Corps')">
+        <svg style="width:22px;height:22px;fill:currentColor;" viewBox="0 0 32 32"><path d="M16 0C7.163 0 0 7.163 0 16c0 2.833.738 5.49 2.027 7.8L0 32l8.418-2.01A15.93 15.93 0 0016 32c8.837 0 16-7.163 16-16S24.837 0 16 0zm0 29.333a13.27 13.27 0 01-6.765-1.847l-.484-.287-5.003 1.196 1.23-4.867-.316-.5A13.267 13.267 0 012.667 16C2.667 8.636 8.636 2.667 16 2.667S29.333 8.636 29.333 16 23.364 29.333 16 29.333zm7.27-9.87c-.398-.199-2.354-1.162-2.72-1.295-.365-.133-.63-.199-.896.2-.265.398-1.029 1.295-1.261 1.56-.232.266-.465.299-.863.1-.398-.2-1.681-.62-3.203-1.976-1.184-1.056-1.983-2.36-2.215-2.758-.232-.398-.025-.613.174-.811.179-.178.398-.465.597-.698.2-.232.266-.398.399-.664.133-.265.066-.498-.033-.697-.1-.2-.896-2.16-1.228-2.957-.323-.777-.651-.672-.896-.684l-.764-.013c-.265 0-.697.1-1.062.498-.365.398-1.394 1.362-1.394 3.322s1.427 3.854 1.626 4.12c.2.265 2.808 4.287 6.803 6.014.951.41 1.693.655 2.272.839.954.303 1.823.26 2.51.158.765-.114 2.354-.963 2.686-1.893.333-.93.333-1.727.233-1.893-.1-.166-.365-.266-.764-.465z"/></svg>
+        Commander sur WhatsApp
+      </button>
+    </div>
+  </div>
+  <div class="contenu-detail">
+    <div class="section-carte">
+      <h2><span>💡</span> Pourquoi le STC30 est unique ?</h2>
+      <div class="intro-texte">Contrairement à plusieurs compléments classiques qui se limitent uniquement à apporter des vitamines, le <strong>STC30 a été conçu pour accompagner l'organisme en profondeur</strong> grâce à une synergie d'ingrédients naturels premium. Sa force vient de la <strong>combinaison de cellules souches végétales, d'antioxydants puissants et de vitamines essentielles</strong>.</div>
+    </div>
+    <div class="section-carte">
+      <h2><span>🧬</span> Les ingrédients & leur rôle</h2>
+      <div class="ingredients-liste">
+        <div class="ingredient-item"><div class="ingredient-icon-wrap">🌿</div><div class="ingredient-contenu"><div class="ingredient-nom">GliSODin — Extrait de Cantaloup</div><div class="ingredient-sous">La Super Oxyde Dismutase (SOD)</div><div class="ingredient-desc">Le GliSODin contient la SOD, considérée comme l'un des <strong>antioxydants naturels les plus puissants au monde</strong>. Elle aide le corps à lutter contre les radicaux libres responsables du vieillissement cellulaire et de la fatigue chronique.</div><ul class="ingredient-roles"><li>Protection des cellules contre les radicaux libres</li><li>Ralentissement du vieillissement cellulaire</li><li>Soutien du système immunitaire</li><li>Amélioration de la récupération physique</li><li>Soutien de la circulation sanguine</li></ul></div></div>
+        <div class="ingredient-item"><div class="ingredient-icon-wrap">🍇</div><div class="ingredient-contenu"><div class="ingredient-nom">PhytoCellTec Solar Vitis</div><div class="ingredient-sous">Cellules souches de raisin rare</div><div class="ingredient-desc">Extrait d'un raisin rare riche en <strong>anthocyanes</strong>, des antioxydants puissants. Appréciées pour leur capacité à protéger et régénérer les cellules du corps.</div><ul class="ingredient-roles"><li>Protection contre le stress oxydatif</li><li>Soutien de la régénération cellulaire</li><li>Favorise le bien-être cardiovasculaire</li><li>Accompagne la santé de la peau</li><li>Participe à la protection des organes</li></ul></div></div>
+        <div class="ingredient-item"><div class="ingredient-icon-wrap">🍏</div><div class="ingredient-contenu"><div class="ingredient-nom">PhytoCellTec Malus Domestica</div><div class="ingredient-sous">Cellules souches de pomme suisse Uttwiler Spätlauber</div><div class="ingredient-desc">Issues d'une <strong>variété rare de pomme suisse</strong> connue pour sa longévité exceptionnelle. Reconnues pour leur action remarquable sur la longévité cellulaire et la revitalisation en profondeur.</div><ul class="ingredient-roles"><li>Protection des cellules souches humaines</li><li>Revitalisation cellulaire en profondeur</li><li>Soutien du renouvellement cellulaire</li><li>Accompagnement anti-âge naturel</li><li>Amélioration du bien-être général</li></ul></div></div>
+        <div class="ingredient-item"><div class="ingredient-icon-wrap">🫐</div><div class="ingredient-contenu"><div class="ingredient-nom">Extrait de Myrtille</div><div class="ingredient-sous">Riche en antioxydants et vitamines naturelles</div><div class="ingredient-desc">L'un des <strong>fruits les plus riches en antioxydants</strong> de la nature. Utilisé pour ses vertus sur la vision et la circulation sanguine.</div><ul class="ingredient-roles"><li>Soutien de la circulation sanguine</li><li>Protection et santé des yeux</li><li>Soutien des fonctions cérébrales</li><li>Protection des cellules</li><li>Boost de l'énergie globale</li></ul></div></div>
+        <div class="ingredient-item"><div class="ingredient-icon-wrap">🍇</div><div class="ingredient-contenu"><div class="ingredient-nom">Poudre de Jus de Cassis</div><div class="ingredient-sous">Riche en nutriments et antioxydants essentiels</div><div class="ingredient-desc">Naturellement concentré en <strong>vitamines, minéraux et antioxydants</strong> puissants. Reconnu pour son action bénéfique sur les défenses immunitaires.</div><ul class="ingredient-roles"><li>Renforcement du système immunitaire</li><li>Amélioration de la circulation sanguine</li><li>Soutien de la récupération physique</li><li>Boost de la vitalité quotidienne</li><li>Protection antioxydante générale</li></ul></div></div>
+        <div class="ingredient-item"><div class="ingredient-icon-wrap">🍊</div><div class="ingredient-contenu"><div class="ingredient-nom">Vitamine C</div><div class="ingredient-sous">Vitamine essentielle aux multiples fonctions</div><div class="ingredient-desc">L'une des <strong>vitamines les plus importantes pour l'organisme</strong>. Joue un rôle clé dans le maintien des défenses naturelles.</div><ul class="ingredient-roles"><li>Renforcement des défenses naturelles</li><li>Réduction de la fatigue</li><li>Soutien de la production de collagène</li><li>Protection contre les agressions extérieures</li><li>Favorise une meilleure récupération</li></ul></div></div>
+      </div>
+    </div>
+    <div class="section-carte">
+      <h2><span>🎯</span> Pour qui est le STC30 ?</h2>
+      <p style="font-size:15px;color:#333;line-height:1.8;margin-bottom:20px;">Le STC30 n'agit pas sur une seule zone mais accompagne <strong>l'organisme dans son ensemble</strong>.</p>
+      <div class="apps-grid"><span class="app-tag">Fatigue chronique</span><span class="app-tag">Douleurs articulaires</span><span class="app-tag">Diabète</span><span class="app-tag">Hypertension</span><span class="app-tag">Problèmes de circulation</span><span class="app-tag">Arthrose</span><span class="app-tag">Stress oxydatif</span><span class="app-tag">Faiblesse immunitaire</span><span class="app-tag">Fibromes</span><span class="app-tag">Problèmes de prostate</span><span class="app-tag">Hernie discale</span><span class="app-tag">Goutte</span><span class="app-tag">Rhumatisme</span><span class="app-tag">Vieillissement cellulaire</span></div>
+    </div>
+    <div class="section-carte">
+      <h2><span>📋</span> Mode d'emploi</h2>
+      <div class="etapes">
+        <div class="etape"><div class="etape-num">1</div><div class="etape-texte"><strong>Déchirez un sachet</strong> et placez le contenu directement sous la langue.</div></div>
+        <div class="etape"><div class="etape-num">2</div><div class="etape-texte"><strong>Attendez qu'il se dissolve complètement</strong> avant d'avaler.</div></div>
+        <div class="etape"><div class="etape-num">3</div><div class="etape-texte"><strong>1 sachet par jour</strong>, de préférence <strong>à jeun</strong> le matin.</div></div>
+        <div class="etape"><div class="etape-num">4</div><div class="etape-texte"><strong>Buvez beaucoup d'eau</strong> tout au long de la journée.</div></div>
+      </div>
+      <div class="conseil-box">💡 <strong>Conseil BIOSAN :</strong> Pour des résultats optimaux, suivez une cure d'au moins <strong>1 à 3 mois</strong>.</div>
+    </div>
+    <div class="cta-bas">
+      <h3>Commander le STC30 maintenant</h3>
+      <p>Contactez-nous directement sur WhatsApp !</p>
+      <div class="cta-buttons">
+        <button class="btn-cta-wa" onclick="commanderWAProduit('STC30 — Le Généraliste du Corps')"><svg style="width:20px;height:20px;fill:white;" viewBox="0 0 32 32"><path d="M16 0C7.163 0 0 7.163 0 16c0 2.833.738 5.49 2.027 7.8L0 32l8.418-2.01A15.93 15.93 0 0016 32c8.837 0 16-7.163 16-16S24.837 0 16 0zm0 29.333a13.27 13.27 0 01-6.765-1.847l-.484-.287-5.003 1.196 1.23-4.867-.316-.5A13.267 13.267 0 012.667 16C2.667 8.636 8.636 2.667 16 2.667S29.333 8.636 29.333 16 23.364 29.333 16 29.333zm7.27-9.87c-.398-.199-2.354-1.162-2.72-1.295-.365-.133-.63-.199-.896.2-.265.398-1.029 1.295-1.261 1.56-.232.266-.465.299-.863.1-.398-.2-1.681-.62-3.203-1.976-1.184-1.056-1.983-2.36-2.215-2.758-.232-.398-.025-.613.174-.811.179-.178.398-.465.597-.698.2-.232.266-.398.399-.664.133-.265.066-.498-.033-.697-.1-.2-.896-2.16-1.228-2.957-.323-.777-.651-.672-.896-.684l-.764-.013c-.265 0-.697.1-1.062.498-.365.398-1.394 1.362-1.394 3.322s1.427 3.854 1.626 4.12c.2.265 2.808 4.287 6.803 6.014.951.41 1.693.655 2.272.839.954.303 1.823.26 2.51.158.765-.114 2.354-.963 2.686-1.893.333-.93.333-1.727.233-1.893-.1-.166-.365-.266-.764-.465z"/></svg>Commander le STC30</button>
+        <button class="btn-cta-retour" onclick="allerPage('accueil')">Voir tous les produits</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== PAGE SCC+ ========== -->
+<div class="page" id="page-scc">
+  <div class="hero-produit">
+    <div class="hero-img-wrap"><img src="scc.jpg" alt="SCC+" onerror="this.parentElement.style.background='#c8e6c9';this.style.display='none'"></div>
+    <div class="hero-detail-info">
+      <div class="hero-badge-produit">🌿 Minceur & Digestion</div>
+      <h1>SCC+</h1>
+      <div class="hero-sous-titre">Le Nettoyeur du Côlon</div>
+      <p>Quand le côlon est encombré, tout le corps souffre. Le SCC+ accompagne le système digestif, favorise le nettoyage intestinal et aide à retrouver légèreté et bien-être au quotidien.</p>
+      <div class="prix-hero">
+        <div class="prix-box"><div class="prix-lbl">1 boîte</div><div class="prix-val">55 000 FCFA</div></div>
+        <div class="prix-box" style="padding-top:20px;"><div class="offre-badge">🔥 Meilleure offre</div><div class="prix-lbl">2 boîtes</div><div class="prix-val">100 000 FCFA</div><div class="prix-eco">Économie : 10 000 FCFA</div></div>
+      </div>
+      <button class="btn-commander-hero" onclick="commanderWAProduit('SCC+ — Le Nettoyeur du Côlon')"><svg style="width:22px;height:22px;fill:currentColor;" viewBox="0 0 32 32"><path d="M16 0C7.163 0 0 7.163 0 16c0 2.833.738 5.49 2.027 7.8L0 32l8.418-2.01A15.93 15.93 0 0016 32c8.837 0 16-7.163 16-16S24.837 0 16 0zm0 29.333a13.27 13.27 0 01-6.765-1.847l-.484-.287-5.003 1.196 1.23-4.867-.316-.5A13.267 13.267 0 012.667 16C2.667 8.636 8.636 2.667 16 2.667S29.333 8.636 29.333 16 23.364 29.333 16 29.333zm7.27-9.87c-.398-.199-2.354-1.162-2.72-1.295-.365-.133-.63-.199-.896.2-.265.398-1.029 1.295-1.261 1.56-.232.266-.465.299-.863.1-.398-.2-1.681-.62-3.203-1.976-1.184-1.056-1.983-2.36-2.215-2.758-.232-.398-.025-.613.174-.811.179-.178.398-.465.597-.698.2-.232.266-.398.399-.664.133-.265.066-.498-.033-.697-.1-.2-.896-2.16-1.228-2.957-.323-.777-.651-.672-.896-.684l-.764-.013c-.265 0-.697.1-1.062.498-.365.398-1.394 1.362-1.394 3.322s1.427 3.854 1.626 4.12c.2.265 2.808 4.287 6.803 6.014.951.41 1.693.655 2.272.839.954.303 1.823.26 2.51.158.765-.114 2.354-.963 2.686-1.893.333-.93.333-1.727.233-1.893-.1-.166-.365-.266-.764-.465z"/></svg>Commander sur WhatsApp</button>
+    </div>
+  </div>
+  <div class="contenu-detail">
+    <div class="section-carte"><h2><span>💡</span> Pourquoi le côlon est si important ?</h2><div class="intro-texte">Beaucoup de personnes ignorent que plusieurs inconforts quotidiens peuvent être liés à un <strong>mauvais fonctionnement du côlon</strong> : ballonnements, constipation, mauvaise digestion, sensation de lourdeur, mauvaise haleine, fatigue. Le côlon joue un rôle essentiel dans <strong>l'équilibre de tout l'organisme</strong>.</div></div>
+    <div class="section-carte">
+      <h2><span>🧬</span> Les ingrédients & leur rôle</h2>
+      <div class="ingredients-liste">
+        <div class="ingredient-item"><div class="ingredient-icon-wrap">🌾</div><div class="ingredient-contenu"><div class="ingredient-nom">Fibres Naturelles</div><div class="ingredient-sous">Le pilier du nettoyage intestinal</div><div class="ingredient-desc">Des <strong>fibres naturelles de haute qualité</strong> reconnues pour leur rôle essentiel dans le soutien du système digestif et le nettoyage du côlon en profondeur.</div><ul class="ingredient-roles"><li>Facilite le transit intestinal</li><li>Nettoyage du côlon en profondeur</li><li>Meilleure élimination des déchets</li><li>Aide le corps à mieux absorber les nutriments</li><li>Réduit les ballonnements et l'inconfort abdominal</li></ul></div></div>
+        <div class="ingredient-item"><div class="ingredient-icon-wrap">🍋</div><div class="ingredient-contenu"><div class="ingredient-nom">Sinetrol</div><div class="ingredient-sous">Extrait breveté des agrumes méditerranéens</div><div class="ingredient-desc">Ingrédient <strong>breveté extrait des agrumes méditerranéens</strong>, reconnu pour ses propriétés sur la gestion du poids et la combustion des graisses.</div><ul class="ingredient-roles"><li>Broyeur de graisse naturel puissant</li><li>Augmente le métabolisme corporel</li><li>Réduit l'excès de graisse corporelle</li><li>Soutient la régulation de la glycémie</li><li>Favorise la perte de poids naturelle</li></ul></div></div>
+        <div class="ingredient-item"><div class="ingredient-icon-wrap">🌿</div><div class="ingredient-contenu"><div class="ingredient-nom">Extraits Végétaux Digestifs</div><div class="ingredient-sous">Plantes reconnues pour la digestion</div><div class="ingredient-desc">Plusieurs <strong>extraits végétaux naturels</strong> pour soutenir la digestion, apaiser les inflammations intestinales et favoriser un meilleur équilibre du microbiote.</div><ul class="ingredient-roles"><li>Apaise les inflammations intestinales</li><li>Soutient l'équilibre du microbiote</li><li>Aide à lutter contre la constipation</li><li>Réduit les ulcères d'estomac</li><li>Favorise un meilleur confort digestif global</li></ul></div></div>
+      </div>
+    </div>
+    <div class="section-carte"><h2><span>🎯</span> Pour qui est le SCC+ ?</h2><div class="apps-grid"><span class="app-tag">Ballonnements fréquents</span><span class="app-tag">Constipation chronique</span><span class="app-tag">Mauvaise digestion</span><span class="app-tag">Sensation de lourdeur</span><span class="app-tag">Mauvaise haleine</span><span class="app-tag">Perte de poids</span><span class="app-tag">Colopathies</span><span class="app-tag">Inflammations intestinales</span><span class="app-tag">Régulation glycémie</span><span class="app-tag">Fatigue digestive</span></div></div>
+    <div class="section-carte"><h2><span>📋</span> Mode d'emploi</h2><div class="etapes"><div class="etape"><div class="etape-num">1</div><div class="etape-texte"><strong>Mélangez 1 sachet</strong> dans 200 ml d'eau ordinaire.</div></div><div class="etape"><div class="etape-num">2</div><div class="etape-texte"><strong>Remuez bien</strong> jusqu'à dissolution complète.</div></div><div class="etape"><div class="etape-num">3</div><div class="etape-texte">Consommez de préférence <strong>avant le coucher</strong>.</div></div><div class="etape"><div class="etape-num">4</div><div class="etape-texte"><strong>1 sachet par jour</strong> suffit.</div></div></div><div class="conseil-box">💡 <strong>Conseil BIOSAN :</strong> Associez le SCC+ à une <strong>alimentation équilibrée</strong>. Cure recommandée : <strong>2 à 3 mois</strong>.</div></div>
+    <div class="cta-bas"><h3>Commander le SCC+</h3><p>Retrouvez légèreté et confort digestif !</p><div class="cta-buttons"><button class="btn-cta-wa" onclick="commanderWAProduit('SCC+ — Le Nettoyeur du Côlon')"><svg style="width:20px;height:20px;fill:white;" viewBox="0 0 32 32"><path d="M16 0C7.163 0 0 7.163 0 16c0 2.833.738 5.49 2.027 7.8L0 32l8.418-2.01A15.93 15.93 0 0016 32c8.837 0 16-7.163 16-16S24.837 0 16 0zm0 29.333a13.27 13.27 0 01-6.765-1.847l-.484-.287-5.003 1.196 1.23-4.867-.316-.5A13.267 13.267 0 012.667 16C2.667 8.636 8.636 2.667 16 2.667S29.333 8.636 29.333 16 23.364 29.333 16 29.333zm7.27-9.87c-.398-.199-2.354-1.162-2.72-1.295-.365-.133-.63-.199-.896.2-.265.398-1.029 1.295-1.261 1.56-.232.266-.465.299-.863.1-.398-.2-1.681-.62-3.203-1.976-1.184-1.056-1.983-2.36-2.215-2.758-.232-.398-.025-.613.174-.811.179-.178.398-.465.597-.698.2-.232.266-.398.399-.664.133-.265.066-.498-.033-.697-.1-.2-.896-2.16-1.228-2.957-.323-.777-.651-.672-.896-.684l-.764-.013c-.265 0-.697.1-1.062.498-.365.398-1.394 1.362-1.394 3.322s1.427 3.854 1.626 4.12c.2.265 2.808 4.287 6.803 6.014.951.41 1.693.655 2.272.839.954.303 1.823.26 2.51.158.765-.114 2.354-.963 2.686-1.893.333-.93.333-1.727.233-1.893-.1-.166-.365-.266-.764-.465z"/></svg>Commander le SCC+</button><button class="btn-cta-retour" onclick="allerPage('accueil')">Voir tous les produits</button></div></div>
+  </div>
+</div>
+
+<!-- ========== PAGE SIC ========== -->
+<div class="page" id="page-sic">
+  <div class="hero-produit">
+    <div class="hero-img-wrap"><img src="sic.jpg" alt="SIC" onerror="this.parentElement.style.background='#c8e6c9';this.style.display='none'"></div>
+    <div class="hero-detail-info">
+      <div class="hero-badge-produit">🛡️ Immunité & Protection</div>
+      <h1>SIC</h1>
+      <div class="hero-sous-titre">Le Défenseur du Système Immunitaire</div>
+      <p>Votre organisme a besoin d'être protégé chaque jour. Entre le stress, la fatigue et le rythme de vie moderne, le corps peut devenir fragile. Le SIC est là pour renforcer vos défenses naturelles.</p>
+      <div class="prix-hero">
+        <div class="prix-box"><div class="prix-lbl">1 boîte</div><div class="prix-val">50 000 FCFA</div></div>
+        <div class="prix-box" style="padding-top:20px;"><div class="offre-badge">🔥 Meilleure offre</div><div class="prix-lbl">2 boîtes</div><div class="prix-val">90 000 FCFA</div><div class="prix-eco">Économie : 10 000 FCFA</div></div>
+      </div>
+      <button class="btn-commander-hero" onclick="commanderWAProduit('SIC — Le Défenseur du Système Immunitaire')"><svg style="width:22px;height:22px;fill:currentColor;" viewBox="0 0 32 32"><path d="M16 0C7.163 0 0 7.163 0 16c0 2.833.738 5.49 2.027 7.8L0 32l8.418-2.01A15.93 15.93 0 0016 32c8.837 0 16-7.163 16-16S24.837 0 16 0zm0 29.333a13.27 13.27 0 01-6.765-1.847l-.484-.287-5.003 1.196 1.23-4.867-.316-.5A13.267 13.267 0 012.667 16C2.667 8.636 8.636 2.667 16 2.667S29.333 8.636 29.333 16 23.364 29.333 16 29.333zm7.27-9.87c-.398-.199-2.354-1.162-2.72-1.295-.365-.133-.63-.199-.896.2-.265.398-1.029 1.295-1.261 1.56-.232.266-.465.299-.863.1-.398-.2-1.681-.62-3.203-1.976-1.184-1.056-1.983-2.36-2.215-2.758-.232-.398-.025-.613.174-.811.179-.178.398-.465.597-.698.2-.232.266-.398.399-.664.133-.265.066-.498-.033-.697-.1-.2-.896-2.16-1.228-2.957-.323-.777-.651-.672-.896-.684l-.764-.013c-.265 0-.697.1-1.062.498-.365.398-1.394 1.362-1.394 3.322s1.427 3.854 1.626 4.12c.2.265 2.808 4.287 6.803 6.014.951.41 1.693.655 2.272.839.954.303 1.823.26 2.51.158.765-.114 2.354-.963 2.686-1.893.333-.93.333-1.727.233-1.893-.1-.166-.365-.266-.764-.465z"/></svg>Commander sur WhatsApp</button>
+    </div>
+  </div>
+  <div class="contenu-detail">
+    <div class="section-carte"><h2><span>💡</span> Pourquoi votre immunité a besoin de soutien ?</h2><div class="intro-texte">Entre le <strong>stress, la fatigue, les changements climatiques, le manque de sommeil</strong> et le rythme de vie moderne, le corps peut devenir plus fragile. Lorsque les défenses naturelles sont soutenues, l'organisme peut <strong>mieux fonctionner au quotidien</strong>.</div></div>
+    <div class="section-carte">
+      <h2><span>🧬</span> Les ingrédients & leur rôle</h2>
+      <div class="ingredients-liste">
+        <div class="ingredient-item"><div class="ingredient-icon-wrap">🛡️</div><div class="ingredient-contenu"><div class="ingredient-nom">Antioxydants Naturels Puissants</div><div class="ingredient-sous">Protection cellulaire & immunostimulation</div><div class="ingredient-desc">Des <strong>ingrédients naturels riches en antioxydants</strong> qui aident le corps à se protéger contre les agressions responsables du vieillissement cellulaire et de l'affaiblissement de l'organisme.</div><ul class="ingredient-roles"><li>Lutte contre les radicaux libres</li><li>Protection des cellules immunitaires</li><li>Ralentissement du vieillissement cellulaire</li><li>Soutien de la résistance physique générale</li><li>Prévention des déséquilibres biochimiques</li></ul></div></div>
+        <div class="ingredient-item"><div class="ingredient-icon-wrap">🌿</div><div class="ingredient-contenu"><div class="ingredient-nom">Extraits Végétaux Immunostimulants</div><div class="ingredient-sous">Plantes reconnues pour renforcer l'immunité</div><div class="ingredient-desc">Des <strong>extraits végétaux naturels</strong> traditionnellement reconnus pour stimuler et renforcer les défenses naturelles du corps face aux infections.</div><ul class="ingredient-roles"><li>Stimulation du système immunitaire</li><li>Protection contre les infections bactériennes</li><li>Protection contre les infections virales</li><li>Soutien de la santé intestinale</li><li>Réduction des inflammations</li></ul></div></div>
+        <div class="ingredient-item"><div class="ingredient-icon-wrap">⚡</div><div class="ingredient-contenu"><div class="ingredient-nom">Complexe Énergisant Naturel</div><div class="ingredient-sous">Vitalité & récupération physique</div><div class="ingredient-desc">Des <strong>actifs naturels énergisants</strong> qui aident l'organisme à mieux récupérer et retrouver une vitalité durable au quotidien.</div><ul class="ingredient-roles"><li>Excellent regain d'énergie naturelle</li><li>Accompagnement pendant les périodes de fatigue</li><li>Meilleure résistance physique</li><li>Soutien de la santé hépatique</li><li>Équilibre biochimique général</li></ul></div></div>
+      </div>
+    </div>
+    <div class="section-carte"><h2><span>🎯</span> Pour qui est le SIC ?</h2><div class="apps-grid"><span class="app-tag">Faiblesse immunitaire</span><span class="app-tag">Infections fréquentes</span><span class="app-tag">Maladies hépatiques</span><span class="app-tag">MST / IST</span><span class="app-tag">Angines répétitives</span><span class="app-tag">Tuberculose</span><span class="app-tag">Toux chroniques</span><span class="app-tag">Fatigue persistante</span><span class="app-tag">Changements de saison</span><span class="app-tag">Stress chronique</span></div></div>
+    <div class="section-carte"><h2><span>📋</span> Mode d'emploi</h2><div class="etapes"><div class="etape"><div class="etape-num">1</div><div class="etape-texte"><strong>Mélangez 1 sachet</strong> dans 100 ml d'eau et agitez bien.</div></div><div class="etape"><div class="etape-num">2</div><div class="etape-texte"><strong>Buvez immédiatement</strong> après préparation.</div></div><div class="etape"><div class="etape-num">3</div><div class="etape-texte"><strong>1 à 2 sachets par jour</strong> selon le besoin.</div></div><div class="etape"><div class="etape-num">4</div><div class="etape-texte"><strong>Boire abondamment de l'eau</strong> pour maximiser les effets.</div></div></div><div class="conseil-box">💡 <strong>Conseil BIOSAN :</strong> Particulièrement recommandé pendant les <strong>changements de saison</strong>. Cure de <strong>1 à 2 mois</strong> recommandée.</div></div>
+    <div class="cta-bas"><h3>Commander le SIC</h3><p>Protégez votre santé dès aujourd'hui !</p><div class="cta-buttons"><button class="btn-cta-wa" onclick="commanderWAProduit('SIC — Le Défenseur du Système Immunitaire')"><svg style="width:20px;height:20px;fill:white;" viewBox="0 0 32 32"><path d="M16 0C7.163 0 0 7.163 0 16c0 2.833.738 5.49 2.027 7.8L0 32l8.418-2.01A15.93 15.93 0 0016 32c8.837 0 16-7.163 16-16S24.837 0 16 0zm0 29.333a13.27 13.27 0 01-6.765-1.847l-.484-.287-5.003 1.196 1.23-4.867-.316-.5A13.267 13.267 0 012.667 16C2.667 8.636 8.636 2.667 16 2.667S29.333 8.636 29.333 16 23.364 29.333 16 29.333zm7.27-9.87c-.398-.199-2.354-1.162-2.72-1.295-.365-.133-.63-.199-.896.2-.265.398-1.029 1.295-1.261 1.56-.232.266-.465.299-.863.1-.398-.2-1.681-.62-3.203-1.976-1.184-1.056-1.983-2.36-2.215-2.758-.232-.398-.025-.613.174-.811.179-.178.398-.465.597-.698.2-.232.266-.398.399-.664.133-.265.066-.498-.033-.697-.1-.2-.896-2.16-1.228-2.957-.323-.777-.651-.672-.896-.684l-.764-.013c-.265 0-.697.1-1.062.498-.365.398-1.394 1.362-1.394 3.322s1.427 3.854 1.626 4.12c.2.265 2.808 4.287 6.803 6.014.951.41 1.693.655 2.272.839.954.303 1.823.26 2.51.158.765-.114 2.354-.963 2.686-1.893.333-.93.333-1.727.233-1.893-.1-.166-.365-.266-.764-.465z"/></svg>Commander le SIC</button><button class="btn-cta-retour" onclick="allerPage('accueil')">Voir tous les produits</button></div></div>
+  </div>
+</div>
+
+<!-- ========== PAGE SNC ========== -->
+<div class="page" id="page-snc">
+  <div class="hero-produit violet">
+    <div class="hero-img-wrap"><img src="snc.jpg" alt="SNC" onerror="this.parentElement.style.background='#e8eaf6';this.style.display='none'"></div>
+    <div class="hero-detail-info">
+      <div class="hero-badge-produit">🧠 Système Nerveux & Cognition</div>
+      <h1>SNC</h1>
+      <div class="hero-sous-titre">Le Protecteur du Système Nerveux</div>
+      <p>Le stress détruit silencieusement le corps. Beaucoup vivent sous pression permanente : stress, anxiété, fatigue mentale, manque de sommeil. Le SNC accompagne naturellement le système nerveux.</p>
+      <div class="prix-hero">
+        <div class="prix-box"><div class="prix-lbl">1 boîte</div><div class="prix-val">50 000 FCFA</div></div>
+        <div class="prix-box" style="padding-top:20px;"><div class="offre-badge">🔥 Meilleure offre</div><div class="prix-lbl">2 boîtes</div><div class="prix-val">90 000 FCFA</div><div class="prix-eco">Économie : 10 000 FCFA</div></div>
+      </div>
+      <button class="btn-commander-hero" style="color:#4a0080;" onclick="commanderWAProduit('SNC — Le Protecteur du Système Nerveux')"><svg style="width:22px;height:22px;fill:currentColor;" viewBox="0 0 32 32"><path d="M16 0C7.163 0 0 7.163 0 16c0 2.833.738 5.49 2.027 7.8L0 32l8.418-2.01A15.93 15.93 0 0016 32c8.837 0 16-7.163 16-16S24.837 0 16 0zm0 29.333a13.27 13.27 0 01-6.765-1.847l-.484-.287-5.003 1.196 1.23-4.867-.316-.5A13.267 13.267 0 012.667 16C2.667 8.636 8.636 2.667 16 2.667S29.333 8.636 29.333 16 23.364 29.333 16 29.333zm7.27-9.87c-.398-.199-2.354-1.162-2.72-1.295-.365-.133-.63-.199-.896.2-.265.398-1.029 1.295-1.261 1.56-.232.266-.465.299-.863.1-.398-.2-1.681-.62-3.203-1.976-1.184-1.056-1.983-2.36-2.215-2.758-.232-.398-.025-.613.174-.811.179-.178.398-.465.597-.698.2-.232.266-.398.399-.664.133-.265.066-.498-.033-.697-.1-.2-.896-2.16-1.228-2.957-.323-.777-.651-.672-.896-.684l-.764-.013c-.265 0-.697.1-1.062.498-.365.398-1.394 1.362-1.394 3.322s1.427 3.854 1.626 4.12c.2.265 2.808 4.287 6.803 6.014.951.41 1.693.655 2.272.839.954.303 1.823.26 2.51.158.765-.114 2.354-.963 2.686-1.893.333-.93.333-1.727.233-1.893-.1-.166-.365-.266-.764-.465z"/></svg>Commander sur WhatsApp</button>
+    </div>
+  </div>
+  <div class="contenu-detail">
+    <div class="section-carte">
+      <h2><span>🧠</span> Le système nerveux contrôle tout dans votre corps</h2>
+      <div class="intro-texte">Le système nerveux est le <strong>chef d'orchestre de l'organisme</strong>. Lorsqu'il est perturbé par le stress ou la fatigue, tout le corps en ressent les effets.</div>
+      <div class="systeme-nerveux">
+        <div class="sn-item"><div class="sn-icon">💭</div><div class="sn-label">Concentration</div></div>
+        <div class="sn-item"><div class="sn-icon">🧠</div><div class="sn-label">Mémoire</div></div>
+        <div class="sn-item"><div class="sn-icon">😴</div><div class="sn-label">Sommeil</div></div>
+        <div class="sn-item"><div class="sn-icon">😌</div><div class="sn-label">Émotions</div></div>
+        <div class="sn-item"><div class="sn-icon">🧘</div><div class="sn-label">Gestion du stress</div></div>
+        <div class="sn-item"><div class="sn-icon">⚖️</div><div class="sn-label">Équilibre mental</div></div>
+      </div>
+    </div>
+    <div class="section-carte">
+      <h2><span>🧬</span> Les ingrédients & leur rôle</h2>
+      <div class="ingredients-liste">
+        <div class="ingredient-item"><div class="ingredient-icon-wrap">🌼</div><div class="ingredient-contenu"><div class="ingredient-nom">Lutéine</div><div class="ingredient-sous">Protecteur de la vision & du cerveau</div><div class="ingredient-desc">La lutéine est un <strong>caroténoïde naturel</strong> présent en grande concentration dans les yeux et le cerveau. Elle joue un rôle fondamental dans la protection des cellules nerveuses et la santé visuelle. Notre corps ne peut pas la fabriquer seul — elle doit être apportée par la supplémentation.</div><ul class="ingredient-roles"><li>Protection de la rétine contre la DMLA</li><li>Prévention de la cataracte et du glaucome</li><li>Revitalisation et amélioration de la vision</li><li>Protection des cellules nerveuses du cerveau</li><li>Soutien des fonctions cognitives et de la mémoire</li><li>Filtre naturel contre les lumières bleues nocives</li></ul></div></div>
+        <div class="ingredient-item"><div class="ingredient-icon-wrap">🌿</div><div class="ingredient-contenu"><div class="ingredient-nom">Ginkgo Biloba</div><div class="ingredient-sous">L'arbre aux 1000 ans — Le booster cérébral</div><div class="ingredient-desc">L'une des <strong>plantes médicinales les plus anciennes et les plus étudiées au monde</strong>. Utilisé depuis des millénaires en médecine traditionnelle asiatique, reconnu pour ses effets remarquables sur la circulation cérébrale et les fonctions cognitives.</div><ul class="ingredient-roles"><li>Amélioration de la circulation cérébrale</li><li>Renforcement de la mémoire à court et long terme</li><li>Amélioration de la concentration</li><li>Réduction de l'anxiété et du stress chronique</li><li>Protection contre le déclin cognitif lié à l'âge</li><li>Soutien dans les maladies neurologiques</li><li>Amélioration de la qualité du sommeil</li></ul></div></div>
+        <div class="ingredient-item"><div class="ingredient-icon-wrap">🫐</div><div class="ingredient-contenu"><div class="ingredient-nom">Complexe d'Antioxydants Naturels</div><div class="ingredient-sous">Protection & régénération nerveuse</div><div class="ingredient-desc">Un <strong>complexe d'antioxydants naturels</strong> issus de fruits et plantes riches en flavonoïdes. Ces composés protègent les neurones contre le stress oxydatif, principale cause du vieillissement cérébral.</div><ul class="ingredient-roles"><li>Protection des neurones contre le stress oxydatif</li><li>Ralentissement du vieillissement cérébral</li><li>Soutien de l'équilibre émotionnel</li><li>Réduction de la fatigue mentale</li><li>Favorise un sommeil plus profond et réparateur</li></ul></div></div>
+      </div>
+    </div>
+    <div class="section-carte"><h2><span>🎯</span> Pour qui est le SNC ?</h2><p style="font-size:15px;color:#333;line-height:1.8;margin-bottom:20px;">Particulièrement apprécié par les <strong>travailleurs, étudiants et personnes vivant sous forte pression</strong>.</p><div class="apps-grid"><span class="app-tag">Stress chronique</span><span class="app-tag">Fatigue mentale</span><span class="app-tag">Troubles de la mémoire</span><span class="app-tag">Manque de concentration</span><span class="app-tag">Mauvais sommeil</span><span class="app-tag">Anxiété</span><span class="app-tag">Alzheimer (accompagnement)</span><span class="app-tag">Déficience visuelle</span><span class="app-tag">DMLA</span><span class="app-tag">Cataracte</span><span class="app-tag">Glaucome</span><span class="app-tag">Surmenage professionnel</span><span class="app-tag">Étudiants en examens</span></div></div>
+    <div class="section-carte"><h2><span>📋</span> Mode d'emploi</h2><div class="etapes"><div class="etape"><div class="etape-num">1</div><div class="etape-texte"><strong>Déchirez un sachet</strong> et versez le contenu dans la bouche.</div></div><div class="etape"><div class="etape-num">2</div><div class="etape-texte"><strong>Laissez fondre</strong> sous la langue, de préférence à jeun le matin.</div></div><div class="etape"><div class="etape-num">3</div><div class="etape-texte"><strong>1 à 2 sachets par jour</strong> — matin pour la concentration, soir pour le sommeil.</div></div><div class="etape"><div class="etape-num">4</div><div class="etape-texte"><strong>Boire beaucoup d'eau</strong> pour favoriser l'absorption.</div></div></div><div class="conseil-box">💡 <strong>Conseil BIOSAN :</strong> La <strong>Lutéine et le Ginkgo Biloba</strong> agissent progressivement — cure de <strong>2 à 3 mois</strong> recommandée. Un esprit apaisé change tout.</div></div>
+    <div class="cta-bas" style="background:linear-gradient(135deg,#4a0080,var(--cyan));"><h3>Commander le SNC</h3><p>Prenez soin de votre cerveau et de votre vision !</p><div class="cta-buttons"><button class="btn-cta-wa" onclick="commanderWAProduit('SNC — Le Protecteur du Système Nerveux')"><svg style="width:20px;height:20px;fill:white;" viewBox="0 0 32 32"><path d="M16 0C7.163 0 0 7.163 0 16c0 2.833.738 5.49 2.027 7.8L0 32l8.418-2.01A15.93 15.93 0 0016 32c8.837 0 16-7.163 16-16S24.837 0 16 0zm0 29.333a13.27 13.27 0 01-6.765-1.847l-.484-.287-5.003 1.196 1.23-4.867-.316-.5A13.267 13.267 0 012.667 16C2.667 8.636 8.636 2.667 16 2.667S29.333 8.636 29.333 16 23.364 29.333 16 29.333zm7.27-9.87c-.398-.199-2.354-1.162-2.72-1.295-.365-.133-.63-.199-.896.2-.265.398-1.029 1.295-1.261 1.56-.232.266-.465.299-.863.1-.398-.2-1.681-.62-3.203-1.976-1.184-1.056-1.983-2.36-2.215-2.758-.232-.398-.025-.613.174-.811.179-.178.398-.465.597-.698.2-.232.266-.398.399-.664.133-.265.066-.498-.033-.697-.1-.2-.896-2.16-1.228-2.957-.323-.777-.651-.672-.896-.684l-.764-.013c-.265 0-.697.1-1.062.498-.365.398-1.394 1.362-1.394 3.322s1.427 3.854 1.626 4.12c.2.265 2.808 4.287 6.803 6.014.951.41 1.693.655 2.272.839.954.303 1.823.26 2.51.158.765-.114 2.354-.963 2.686-1.893.333-.93.333-1.727.233-1.893-.1-.166-.365-.266-.764-.465z"/></svg>Commander le SNC</button><button class="btn-cta-retour" onclick="allerPage('accueil')">Voir tous les produits</button></div></div>
+  </div>
+</div>
+
+<!-- ========== PAGE DOUBLE ROOT ========== -->
+<div class="page" id="page-doubleroot">
+  <div class="hero-produit brun">
+    <div class="hero-img-wrap"><img src="doubleroot.jpg" alt="Double Root" onerror="this.parentElement.style.background='#3d1f00';this.style.display='none'"></div>
+    <div class="hero-detail-info">
+      <div class="hero-badge-produit" style="background:rgba(200,150,12,0.3);border-color:rgba(200,150,12,0.6);color:#ffe082;">☕ 100% Arabica — Vitalité Masculine</div>
+      <h1>Double Root Coffee</h1>
+      <div class="hero-sous-titre" style="color:#ffe082;">Le Booster de Vitalité Masculine</div>
+      <p>Avec le stress, la fatigue et l'âge, beaucoup d'hommes ressentent une baisse d'énergie et de vitalité. Le Double Root Coffee combine la puissance du café Arabica aux vertus de racines médicinales pour retrouver énergie, endurance et confiance.</p>
+      <div class="prix-hero">
+        <div class="prix-box"><div class="prix-lbl">1 boîte</div><div class="prix-val" style="color:#ffe082;">30 000 FCFA</div></div>
+        <div class="prix-box" style="padding-top:20px;"><div class="offre-badge">🔥 Meilleure offre</div><div class="prix-lbl">2 boîtes</div><div class="prix-val" style="color:#ffe082;">50 000 FCFA</div><div class="prix-eco">Économie : 10 000 FCFA</div></div>
+      </div>
+      <button class="btn-commander-hero" style="color:var(--brun);background:linear-gradient(90deg,var(--or),#e6a817);" onclick="commanderWAProduit('Double Root Coffee — Le Booster de Vitalité Masculine')"><svg style="width:22px;height:22px;fill:white;" viewBox="0 0 32 32"><path d="M16 0C7.163 0 0 7.163 0 16c0 2.833.738 5.49 2.027 7.8L0 32l8.418-2.01A15.93 15.93 0 0016 32c8.837 0 16-7.163 16-16S24.837 0 16 0zm0 29.333a13.27 13.27 0 01-6.765-1.847l-.484-.287-5.003 1.196 1.23-4.867-.316-.5A13.267 13.267 0 012.667 16C2.667 8.636 8.636 2.667 16 2.667S29.333 8.636 29.333 16 23.364 29.333 16 29.333zm7.27-9.87c-.398-.199-2.354-1.162-2.72-1.295-.365-.133-.63-.199-.896.2-.265.398-1.029 1.295-1.261 1.56-.232.266-.465.299-.863.1-.398-.2-1.681-.62-3.203-1.976-1.184-1.056-1.983-2.36-2.215-2.758-.232-.398-.025-.613.174-.811.179-.178.398-.465.597-.698.2-.232.266-.398.399-.664.133-.265.066-.498-.033-.697-.1-.2-.896-2.16-1.228-2.957-.323-.777-.651-.672-.896-.684l-.764-.013c-.265 0-.697.1-1.062.498-.365.398-1.394 1.362-1.394 3.322s1.427 3.854 1.626 4.12c.2.265 2.808 4.287 6.803 6.014.951.41 1.693.655 2.272.839.954.303 1.823.26 2.51.158.765-.114 2.354-.963 2.686-1.893.333-.93.333-1.727.233-1.893-.1-.166-.365-.266-.764-.465z"/></svg>Commander sur WhatsApp</button>
+    </div>
+  </div>
+  <div class="contenu-detail">
+    <div class="section-carte"><h2><span>💡</span> Pourquoi tant d'hommes en parlent ?</h2><div class="intro-texte" style="border-color:var(--or);">La vitalité masculine influence <strong>toute la vie d'un homme</strong> : travail, motivation, humeur et bien-être personnel. Le Double Root Coffee est une <strong>formule unique</strong> qui associe le plaisir d'un café Arabica naturel aux vertus puissantes de racines médicinales.</div></div>
+    <div class="section-carte">
+      <h2><span>🧬</span> Les ingrédients & leur rôle</h2>
+      <div class="ingredients-liste">
+        <div class="ingredient-item" style="background:#fdf8f0;border-color:#f5e6d0;"><div class="ingredient-icon-wrap" style="background:linear-gradient(135deg,var(--brun),var(--or));">☕</div><div class="ingredient-contenu"><div class="ingredient-nom" style="color:var(--brun);">Café Arabica 100% Naturel</div><div class="ingredient-sous" style="color:var(--or);">La base — Énergie & plaisir naturels</div><div class="ingredient-desc">Du <strong>café Arabica de qualité premium</strong>, reconnu pour son goût doux et raffiné. L'Arabica offre une énergie plus douce et durable sans les effets négatifs des cafés industriels.</div><ul class="ingredient-roles"><li>Énergie naturelle durable sans nervosité</li><li>Stimulation de la concentration et vigilance</li><li>Amélioration de la performance physique</li><li>Boost du métabolisme naturellement</li><li>Goût doux et agréable au quotidien</li></ul></div></div>
+        <div class="ingredient-item" style="background:#fdf8f0;border-color:#f5e6d0;"><div class="ingredient-icon-wrap" style="background:linear-gradient(135deg,var(--brun),var(--or));">🌱</div><div class="ingredient-contenu"><div class="ingredient-nom" style="color:var(--brun);">Racine de Ginseng</div><div class="ingredient-sous" style="color:var(--or);">Le roi des plantes adaptogènes</div><div class="ingredient-desc">L'une des <strong>plantes médicinales les plus précieuses au monde</strong>, utilisée depuis plus de 5000 ans. Adaptogène puissant qui aide le corps à s'adapter au stress et à retrouver son équilibre naturel.</div><ul class="ingredient-roles"><li>Renforcement de l'endurance physique et mentale</li><li>Soutien de la vitalité masculine</li><li>Réduction du stress et de la fatigue chronique</li><li>Amélioration des performances physiques</li><li>Soutien de l'équilibre hormonal naturel</li><li>Renforcement du système immunitaire</li></ul></div></div>
+        <div class="ingredient-item" style="background:#fdf8f0;border-color:#f5e6d0;"><div class="ingredient-icon-wrap" style="background:linear-gradient(135deg,var(--brun),var(--or));">🍂</div><div class="ingredient-contenu"><div class="ingredient-nom" style="color:var(--brun);">Racine de Maca</div><div class="ingredient-sous" style="color:var(--or);">Le secret des Anciens Incas pour la vitalité</div><div class="ingredient-desc">Plante originaire des Andes péruviennes, utilisée par les guerriers Incas pour <strong>booster leur énergie avant les combats</strong>. Aujourd'hui, l'un des ingrédients naturels les plus recherchés pour la vitalité masculine.</div><ul class="ingredient-roles"><li>Boost puissant de la vitalité masculine</li><li>Amélioration naturelle de l'endurance</li><li>Soutien de la tonicité et de la forme physique</li><li>Amélioration du bien-être intime masculin</li><li>Réduction de la fatigue physique et mentale</li><li>Soutien de la confiance en soi</li></ul></div></div>
+      </div>
+    </div>
+    <div class="section-carte"><h2><span>🎯</span> Pour qui est le Double Root Coffee ?</h2><div class="apps-grid"><span class="app-tag" style="background:#fff8e1;color:var(--brun);border-color:#f5e6d0;">Baisse d'énergie masculine</span><span class="app-tag" style="background:#fff8e1;color:var(--brun);border-color:#f5e6d0;">Fatigue chronique</span><span class="app-tag" style="background:#fff8e1;color:var(--brun);border-color:#f5e6d0;">Stress professionnel</span><span class="app-tag" style="background:#fff8e1;color:var(--brun);border-color:#f5e6d0;">Endurance réduite</span><span class="app-tag" style="background:#fff8e1;color:var(--brun);border-color:#f5e6d0;">Bien-être intime</span><span class="app-tag" style="background:#fff8e1;color:var(--brun);border-color:#f5e6d0;">Performance physique</span><span class="app-tag" style="background:#fff8e1;color:var(--brun);border-color:#f5e6d0;">Hommes actifs & sportifs</span><span class="app-tag" style="background:#fff8e1;color:var(--brun);border-color:#f5e6d0;">Confiance en soi</span></div></div>
+    <div class="section-carte"><h2><span>📋</span> Mode d'emploi</h2><div class="etapes"><div class="etape"><div class="etape-num" style="background:linear-gradient(135deg,var(--brun),var(--or));">1</div><div class="etape-texte"><strong>Versez le contenu d'un sachet</strong> dans une tasse.</div></div><div class="etape"><div class="etape-num" style="background:linear-gradient(135deg,var(--brun),var(--or));">2</div><div class="etape-texte"><strong>Ajoutez 150 à 200 ml d'eau chaude</strong> (environ 80°C, pas bouillante).</div></div><div class="etape"><div class="etape-num" style="background:linear-gradient(135deg,var(--brun),var(--or));">3</div><div class="etape-texte"><strong>Remuez bien</strong>. Ajoutez lait ou sucre selon votre goût.</div></div><div class="etape"><div class="etape-num" style="background:linear-gradient(135deg,var(--brun),var(--or));">4</div><div class="etape-texte"><strong>1 sachet par jour</strong>, de préférence le matin. Peut se consommer chaud ou froid.</div></div></div><div class="conseil-box" style="border-color:var(--or);background:linear-gradient(135deg,#fff8e1,#f5e6d0);">💡 <strong style="color:var(--brun);">Conseil BIOSAN :</strong> Consommation régulière sur <strong>1 à 2 mois</strong> recommandée. La vitalité masculine influence toute la vie — ne laissez pas la fatigue vous freiner.</div></div>
+    <div class="cta-bas" style="background:linear-gradient(135deg,var(--brun),#5d3a1a,var(--vert));"><h3>Commander le Double Root Coffee</h3><p>Retrouvez votre vitalité naturellement !</p><div class="cta-buttons"><button class="btn-cta-wa" onclick="commanderWAProduit('Double Root Coffee — Le Booster de Vitalité Masculine')"><svg style="width:20px;height:20px;fill:white;" viewBox="0 0 32 32"><path d="M16 0C7.163 0 0 7.163 0 16c0 2.833.738 5.49 2.027 7.8L0 32l8.418-2.01A15.93 15.93 0 0016 32c8.837 0 16-7.163 16-16S24.837 0 16 0zm0 29.333a13.27 13.27 0 01-6.765-1.847l-.484-.287-5.003 1.196 1.23-4.867-.316-.5A13.267 13.267 0 012.667 16C2.667 8.636 8.636 2.667 16 2.667S29.333 8.636 29.333 16 23.364 29.333 16 29.333zm7.27-9.87c-.398-.199-2.354-1.162-2.72-1.295-.365-.133-.63-.199-.896.2-.265.398-1.029 1.295-1.261 1.56-.232.266-.465.299-.863.1-.398-.2-1.681-.62-3.203-1.976-1.184-1.056-1.983-2.36-2.215-2.758-.232-.398-.025-.613.174-.811.179-.178.398-.465.597-.698.2-.232.266-.398.399-.664.133-.265.066-.498-.033-.697-.1-.2-.896-2.16-1.228-2.957-.323-.777-.651-.672-.896-.684l-.764-.013c-.265 0-.697.1-1.062.498-.365.398-1.394 1.362-1.394 3.322s1.427 3.854 1.626 4.12c.2.265 2.808 4.287 6.803 6.014.951.41 1.693.655 2.272.839.954.303 1.823.26 2.51.158.765-.114 2.354-.963 2.686-1.893.333-.93.333-1.727.233-1.893-.1-.166-.365-.266-.764-.465z"/></svg>Commander Double Root</button><button class="btn-cta-retour" onclick="allerPage('accueil')">Voir tous les produits</button></div></div>
+  </div>
+</div>
+
+<!-- WHATSAPP FLOTTANT -->
+<a class="whatsapp-float" href="https://wa.me/2250759385909" target="_blank">
+  <svg style="width:26px;height:26px;fill:white;flex-shrink:0;" viewBox="0 0 32 32"><path d="M16 0C7.163 0 0 7.163 0 16c0 2.833.738 5.49 2.027 7.8L0 32l8.418-2.01A15.93 15.93 0 0016 32c8.837 0 16-7.163 16-16S24.837 0 16 0zm0 29.333a13.27 13.27 0 01-6.765-1.847l-.484-.287-5.003 1.196 1.23-4.867-.316-.5A13.267 13.267 0 012.667 16C2.667 8.636 8.636 2.667 16 2.667S29.333 8.636 29.333 16 23.364 29.333 16 29.333zm7.27-9.87c-.398-.199-2.354-1.162-2.72-1.295-.365-.133-.63-.199-.896.2-.265.398-1.029 1.295-1.261 1.56-.232.266-.465.299-.863.1-.398-.2-1.681-.62-3.203-1.976-1.184-1.056-1.983-2.36-2.215-2.758-.232-.398-.025-.613.174-.811.179-.178.398-.465.597-.698.2-.232.266-.398.399-.664.133-.265.066-.498-.033-.697-.1-.2-.896-2.16-1.228-2.957-.323-.777-.651-.672-.896-.684l-.764-.013c-.265 0-.697.1-1.062.498-.365.398-1.394 1.362-1.394 3.322s1.427 3.854 1.626 4.12c.2.265 2.808 4.287 6.803 6.014.951.41 1.693.655 2.272.839.954.303 1.823.26 2.51.158.765-.114 2.354-.963 2.686-1.893.333-.93.333-1.727.233-1.893-.1-.166-.365-.266-.764-.465z"/></svg>
+  <span class="wa-texte">Nous contacter</span>
+</a>
+
+<script>
+  const NUMERO = "2250759385909";
+  let panier = [];
+  let produitEnCours = null;
+
+  // ===== NAVIGATION =====
+  function allerPage(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    window.scrollTo({top:0, behavior:'smooth'});
+    setTimeout(animerCartes, 300);
+  }
+
+  // ===== ANIMATIONS =====
+  function animerCartes() {
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('visible'), i * 100);
+        }
+      });
+    }, {threshold: 0.1});
+    document.querySelectorAll('.carte, .temoignage-card').forEach(el => obs.observe(el));
+  }
+  window.addEventListener('load', animerCartes);
+  window.addEventListener('scroll', animerCartes);
+
+  // ===== PANIER =====
+  function ouvrirChoix(nom, sous, prix1, prix2, img) {
+    produitEnCours = {nom, sous, prix1, prix2, img};
+    document.getElementById('choix-img').src = img;
+    document.getElementById('choix-nom').textContent = nom;
+    document.getElementById('choix-sous').textContent = sous;
+    document.getElementById('prix-1').textContent = prix1.toLocaleString('fr-FR') + ' FCFA';
+    document.getElementById('prix-2').textContent = prix2.toLocaleString('fr-FR') + ' FCFA';
+    document.getElementById('economie-2').textContent = 'Économie : ' + ((prix1*2)-prix2).toLocaleString('fr-FR') + ' FCFA';
+    document.getElementById('modal-choix').classList.add('actif');
+    document.getElementById('overlay').classList.add('actif');
+  }
+
+  function fermerChoix() {
+    document.getElementById('modal-choix').classList.remove('actif');
+    if (!document.getElementById('modal-panier').classList.contains('actif'))
+      document.getElementById('overlay').classList.remove('actif');
+    produitEnCours = null;
+  }
+
+  function ajouterAuPanier(quantite) {
+    if (!produitEnCours) return;
+    const prix = quantite === 1 ? produitEnCours.prix1 : produitEnCours.prix2;
+    const cle = produitEnCours.nom + '_' + quantite;
+    const existant = panier.find(p => p.cle === cle);
+    if (existant) { existant.count++; }
+    else { panier.push({...produitEnCours, quantite, prix, count:1, cle}); }
+    fermerChoix();
+    mettreAJourPanier();
+    afficherNotif();
+  }
+
+  function mettreAJourPanier() {
+    const total = panier.reduce((s,p) => s + p.prix * p.count, 0);
+    const count = panier.reduce((s,p) => s + p.count, 0);
+    document.getElementById('panier-count').textContent = count;
+    const container = document.getElementById('panier-items');
+    const footer = document.getElementById('panier-footer');
+    if (panier.length === 0) {
+      container.innerHTML = '<p class="panier-vide">Votre panier est vide 🛒</p>';
+      footer.style.display = 'none'; return;
+    }
+    footer.style.display = 'block';
+    document.getElementById('panier-total').textContent = total.toLocaleString('fr-FR');
+    container.innerHTML = panier.map((p,i) => `
+      <div class="panier-item">
+        <div style="width:54px;height:54px;border-radius:10px;background:var(--creme);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;">🌿</div>
+        <div class="panier-item-info"><div class="panier-item-nom">${p.nom}</div><div class="panier-item-qte">${p.quantite} boîte${p.quantite>1?'s':''} × ${p.count}</div></div>
+        <div class="panier-item-prix">${(p.prix*p.count).toLocaleString('fr-FR')} FCFA</div>
+        <button class="panier-item-del" onclick="supprimerItem(${i})">🗑</button>
+      </div>`).join('');
+  }
+
+  function supprimerItem(i) { panier.splice(i,1); mettreAJourPanier(); }
+  function viderPanier() { panier=[]; mettreAJourPanier(); }
+
+  function ouvrirPanier() {
+    document.getElementById('modal-panier').classList.add('actif');
+    document.getElementById('overlay').classList.add('actif');
+  }
+  function fermerPanier() {
+    document.getElementById('modal-panier').classList.remove('actif');
+    document.getElementById('overlay').classList.remove('actif');
+  }
+  function fermerTout() { fermerChoix(); fermerPanier(); }
+
+  function commanderWhatsApp() {
+    if (panier.length === 0) return;
+    const total = panier.reduce((s,p) => s + p.prix * p.count, 0);
+    let msg = "Bonjour BIOSAN \uD83C\uDF3F\n\nJe souhaite passer la commande suivante :\n\n";
+    panier.forEach(p => { msg += "• *"+p.nom+"* — "+p.quantite+" boîte"+(p.quantite>1?'s':'')+" × "+p.count+" = "+(p.prix*p.count).toLocaleString('fr-FR')+" FCFA\n"; });
+    msg += "\n\uD83D\uDCB0 *Total : "+total.toLocaleString('fr-FR')+" FCFA*\n\nMerci de confirmer ma commande et les modalités de livraison !";
+    window.open("https://wa.me/"+NUMERO+"?text="+encodeURIComponent(msg), '_blank');
+  }
+
+  function commanderWAProduit(produit) {
+    const msg = "Bonjour BIOSAN \uD83C\uDF3F\n\nJe suis intéressé(e) par le produit : *"+produit+"*\n\nPouvez-vous me confirmer la disponibilité et les modalités de livraison ? Merci !";
+    window.open("https://wa.me/"+NUMERO+"?text="+encodeURIComponent(msg), '_blank');
+  }
+
+  function afficherNotif() {
+    const n = document.getElementById('notif');
+    n.classList.add('show');
+    setTimeout(() => n.classList.remove('show'), 2500);
+  }
+
+  // ===== FAQ =====
+  function toggleFaq(btn) {
+    const reponse = btn.nextElementSibling;
+    const estActif = btn.classList.contains('actif');
+    document.querySelectorAll('.faq-question').forEach(q => { q.classList.remove('actif'); q.nextElementSibling.classList.remove('actif'); });
+    if (!estActif) { btn.classList.add('actif'); reponse.classList.add('actif'); }
+  }
+</script>
+</body>
+</html>
